@@ -52,7 +52,7 @@ function keysToDir(up: boolean, down: boolean, left: boolean, right: boolean): n
 export class Player {
   public sprite: Phaser.Physics.Arcade.Image;
   private scene: Phaser.Scene;
-  private currentDir = 0;
+  public currentDir = 0;
   private runFrame = 0;
   private frameTimer = 0;
   private readonly FRAME_RATE = 120; // ms per frame — tuned to match movement speed

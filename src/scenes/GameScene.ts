@@ -14,6 +14,7 @@ export class GameScene extends Phaser.Scene {
     right: Phaser.Input.Keyboard.Key;
   };
   private userId: string | null = null;
+  private debugText!: Phaser.GameObjects.Text;
   private saveTimer = 0;
   private readonly SAVE_INTERVAL = 10000;
 
@@ -71,6 +72,14 @@ export class GameScene extends Phaser.Scene {
         padding: { x: 8, y: 4 },
       })
       .setScrollFactor(0);
+
+    // Debug: show current sprite direction
+    this.debugText = this.add.text(16, 48, 'dir: 0', {
+      fontSize: '16px',
+      color: '#ffff00',
+      backgroundColor: '#00000099',
+      padding: { x: 6, y: 3 },
+    }).setScrollFactor(0);
   }
 
   update(_time: number, delta: number): void {
@@ -83,6 +92,9 @@ export class GameScene extends Phaser.Scene {
 
     this.player.move(up, down, left, right, delta);
     this.player.updateDepth(this.worldMap.offsetX, this.worldMap.offsetY, this.worldMap.renderer?.tileH);
+    if (this.debugText) {
+      this.debugText.setText(`dir: ${this.player.currentDir} | sprite: Male_${this.player.currentDir}`);
+    }
 
     if (this.userId) {
       this.saveTimer += delta;
