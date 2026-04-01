@@ -26,21 +26,17 @@ const ISO = {
 //   W+A            → screen up         = N sprite  (7)
 //   S+D            → screen down       = S sprite  (3)
 //   S+A            → screen left       = W sprite  (1)
-function velocityToDir(vx: number, vy: number): number {
-  // atan2 returns angle from positive X axis, counterclockwise
-  // We remap to clockwise from right (East)
-  const angle = Math.atan2(vy, vx) * (180 / Math.PI);
-  const a = (angle + 360) % 360;
-
-  // 8 sectors of 45° each, starting from East (0°) going clockwise:
-  // 0=E, 1=SE, 2=S, 3=SW, 4=W, 5=NW, 6=N, 7=NE
-  const sector = Math.round(a / 45) % 8;
-
-  // Map sector → Kenney sprite direction index
-  // Kenney: 0=NW, 1=W, 2=SW, 3=S, 4=SE, 5=E, 6=NE, 7=N
-  // sector:  0=E→5, 1=SE→4, 2=S→3, 3=SW→2, 4=W→1, 5=NW→0, 6=N→7, 7=NE→6
-  const sectorToDir = [5, 4, 3, 2, 1, 0, 7, 6];
-  return sectorToDir[sector];
+// Kenney sprite dirs: 0=NW, 1=W, 2=SW, 3=S, 4=SE, 5=E, 6=NE, 7=N
+function keysToDir(up: boolean, down: boolean, left: boolean, right: boolean): number {
+  if (up    && !down  && !left  && !right) return 0; // NW
+  if (right && !up    && !down  && !left)  return 6; // NE
+  if (down  && !up    && !left  && !right) return 4; // SE
+  if (left  && !up    && !down  && !right) return 2; // SW
+  if (up    && right  && !down  && !left)  return 7; // N
+  if (right && down   && !up    && !left)  return 5; // E
+  if (down  && left   && !up    && !right) return 3; // S
+  if (left  && up     && !down  && !right) return 1; // W
+  return 0;
 }
 
 export class Player {
@@ -97,7 +93,7 @@ export class Player {
     if (this.moving) {
       vx = (vx / len) * SPEED;
       vy = (vy / len) * SPEED;
-      this.currentDir = velocityToDir(vx, vy);
+      this.currentDir = keysToDir(up, down, left, right);
     }
 
     body.setVelocity(vx, vy);
