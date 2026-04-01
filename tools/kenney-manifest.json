@@ -1,0 +1,28 @@
+{
+  "name": "kenney-dungeon",
+  "tilewidth": 256,
+  "tileheight": 512,
+  "tilesetSource": "../public/assets/tilemaps/kenney-dungeon.tsj",
+  "primitives": {
+    "floor":        { "id": 115, "name": "stoneTile_W" },
+    "ground":       { "id": 35,  "name": "dirtTiles_W" },
+    "path":         { "id": 39,  "name": "dirt_W" },
+    "stair":        { "id": 67,  "name": "stairs_W" },
+    "wall_w":       { "id": 231, "name": "stoneWall_W" },
+    "wall_n":       { "id": 228, "name": "stoneWall_N" },
+    "wall_e":       { "id": 229, "name": "stoneWall_E" },
+    "wall_s":       { "id": 230, "name": "stoneWall_S" },
+    "corner_nw":    { "id": 159, "name": "stoneWallCorner_W" },
+    "corner_ne":    { "id": 156, "name": "stoneWallCorner_E" },
+    "corner_sw":    { "id": 158, "name": "stoneWallCorner_S" },
+    "corner_se":    { "id": 157, "name": "stoneWallCorner_N" },
+    "door":         { "id": 171, "name": "stoneWallDoorOpen_W" },
+    "water":        { "id": 35,  "name": "dirtTiles_W" },
+    "tree":         { "id": 235, "name": "stone_W" },
+    "plant":        { "id": 235, "name": "stone_W" },
+    "structure":    { "id": 231, "name": "stoneWall_W" },
+    "void":         { "id": null, "name": null }
+  },
+  "traversable": ["floor", "ground", "path", "stair", "door", "water"],
+  "blocking":    ["wall_w", "wall_n", "wall_e", "wall_s", "corner_nw", "corner_ne", "corner_sw", "corner_se", "tree", "plant", "structure", "void"]
+}

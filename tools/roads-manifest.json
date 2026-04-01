@@ -1,0 +1,29 @@
+{
+  "name": "kenney-roads",
+  "tilewidth": 100,
+  "tileheight": 65,
+  "tilesetSource": "../public/assets/tilemaps/kenney-roads.tsj",
+  "primitives": {
+    "floor":        { "id": 64,  "name": "road" },
+    "ground":       { "id": 34,  "name": "grass" },
+    "path":         { "id": 64,  "name": "road" },
+    "stair":        { "id": 72,  "name": "roadHillN" },
+    "wall":         { "id": 46,  "name": "lotN" },
+    "wall_n":       { "id": 46,  "name": "lotN" },
+    "wall_s":       { "id": 49,  "name": "lotS" },
+    "wall_e":       { "id": 44,  "name": "lotE" },
+    "wall_w":       { "id": 51,  "name": "lotW" },
+    "corner_nw":    { "id": 48,  "name": "lotNW" },
+    "corner_ne":    { "id": 47,  "name": "lotNE" },
+    "corner_sw":    { "id": 50,  "name": "lotSW" },
+    "corner_se":    { "id": 45,  "name": "lotES" },
+    "door":         { "id": 64,  "name": "road" },
+    "water":        { "id": 83,  "name": "water" },
+    "tree":         { "id": 82,  "name": "treeTall" },
+    "plant":        { "id": 81,  "name": "treeShort" },
+    "structure":    { "id": 46,  "name": "lotN" },
+    "void":         { "id": null, "name": null }
+  },
+  "traversable": ["floor", "ground", "path", "stair", "door"],
+  "blocking":    ["wall", "wall_n", "wall_s", "wall_e", "wall_w", "corner_nw", "corner_ne", "corner_sw", "corner_se", "tree", "plant", "structure", "water", "void"]
+}

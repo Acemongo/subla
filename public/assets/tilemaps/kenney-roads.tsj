@@ -1,0 +1,595 @@
+{
+ "columns": 0,
+ "grid": {
+  "height": 1,
+  "orientation": "orthogonal",
+  "width": 1
+ },
+ "margin": 0,
+ "name": "kenney-roads",
+ "spacing": 0,
+ "tilecount": 96,
+ "tiledversion": "1.12.1",
+ "tileheight": 65,
+ "tilewidth": 100,
+ "tiles": [
+  {
+   "id": 0,
+   "image": "../tilesets/kenney_roads/png/beach.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 1,
+   "image": "../tilesets/kenney_roads/png/beachCornerES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 2,
+   "image": "../tilesets/kenney_roads/png/beachCornerNE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 3,
+   "image": "../tilesets/kenney_roads/png/beachCornerNW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 4,
+   "image": "../tilesets/kenney_roads/png/beachCornerSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 5,
+   "image": "../tilesets/kenney_roads/png/beachE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 6,
+   "image": "../tilesets/kenney_roads/png/beachES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 7,
+   "image": "../tilesets/kenney_roads/png/beachN.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 8,
+   "image": "../tilesets/kenney_roads/png/beachNE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 9,
+   "image": "../tilesets/kenney_roads/png/beachNW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 10,
+   "image": "../tilesets/kenney_roads/png/beachS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 11,
+   "image": "../tilesets/kenney_roads/png/beachSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 12,
+   "image": "../tilesets/kenney_roads/png/beachW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 13,
+   "image": "../tilesets/kenney_roads/png/bridgeEW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 14,
+   "image": "../tilesets/kenney_roads/png/bridgeNS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 15,
+   "image": "../tilesets/kenney_roads/png/coniferAltShort.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 16,
+   "image": "../tilesets/kenney_roads/png/coniferAltTall.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 17,
+   "image": "../tilesets/kenney_roads/png/coniferShort.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 18,
+   "image": "../tilesets/kenney_roads/png/coniferTall.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 19,
+   "image": "../tilesets/kenney_roads/png/crossroad.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 20,
+   "image": "../tilesets/kenney_roads/png/crossroadESW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 21,
+   "image": "../tilesets/kenney_roads/png/crossroadNES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 22,
+   "image": "../tilesets/kenney_roads/png/crossroadNEW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 23,
+   "image": "../tilesets/kenney_roads/png/crossroadNSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 24,
+   "image": "../tilesets/kenney_roads/png/dirt.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 25,
+   "image": "../tilesets/kenney_roads/png/dirtDouble.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 26,
+   "image": "../tilesets/kenney_roads/png/endE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 27,
+   "image": "../tilesets/kenney_roads/png/endN.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 28,
+   "image": "../tilesets/kenney_roads/png/endS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 29,
+   "image": "../tilesets/kenney_roads/png/endW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 30,
+   "image": "../tilesets/kenney_roads/png/exitE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 31,
+   "image": "../tilesets/kenney_roads/png/exitN.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 32,
+   "image": "../tilesets/kenney_roads/png/exitS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 33,
+   "image": "../tilesets/kenney_roads/png/exitW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 34,
+   "image": "../tilesets/kenney_roads/png/grass.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 35,
+   "image": "../tilesets/kenney_roads/png/grassWhole.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 36,
+   "image": "../tilesets/kenney_roads/png/hillE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 37,
+   "image": "../tilesets/kenney_roads/png/hillES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 38,
+   "image": "../tilesets/kenney_roads/png/hillN.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 39,
+   "image": "../tilesets/kenney_roads/png/hillNE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 40,
+   "image": "../tilesets/kenney_roads/png/hillNW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 41,
+   "image": "../tilesets/kenney_roads/png/hillS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 42,
+   "image": "../tilesets/kenney_roads/png/hillSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 43,
+   "image": "../tilesets/kenney_roads/png/hillW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 44,
+   "image": "../tilesets/kenney_roads/png/lotE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 45,
+   "image": "../tilesets/kenney_roads/png/lotES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 46,
+   "image": "../tilesets/kenney_roads/png/lotN.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 47,
+   "image": "../tilesets/kenney_roads/png/lotNE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 48,
+   "image": "../tilesets/kenney_roads/png/lotNW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 49,
+   "image": "../tilesets/kenney_roads/png/lotS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 50,
+   "image": "../tilesets/kenney_roads/png/lotSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 51,
+   "image": "../tilesets/kenney_roads/png/lotW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 52,
+   "image": "../tilesets/kenney_roads/png/riverBankedES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 53,
+   "image": "../tilesets/kenney_roads/png/riverBankedEW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 54,
+   "image": "../tilesets/kenney_roads/png/riverBankedNE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 55,
+   "image": "../tilesets/kenney_roads/png/riverBankedNS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 56,
+   "image": "../tilesets/kenney_roads/png/riverBankedNW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 57,
+   "image": "../tilesets/kenney_roads/png/riverBankedSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 58,
+   "image": "../tilesets/kenney_roads/png/riverES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 59,
+   "image": "../tilesets/kenney_roads/png/riverEW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 60,
+   "image": "../tilesets/kenney_roads/png/riverNE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 61,
+   "image": "../tilesets/kenney_roads/png/riverNS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 62,
+   "image": "../tilesets/kenney_roads/png/riverNW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 63,
+   "image": "../tilesets/kenney_roads/png/riverSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 64,
+   "image": "../tilesets/kenney_roads/png/road.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 65,
+   "image": "../tilesets/kenney_roads/png/roadES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 66,
+   "image": "../tilesets/kenney_roads/png/roadEW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 67,
+   "image": "../tilesets/kenney_roads/png/roadHill2E.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 68,
+   "image": "../tilesets/kenney_roads/png/roadHill2N.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 69,
+   "image": "../tilesets/kenney_roads/png/roadHill2S.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 70,
+   "image": "../tilesets/kenney_roads/png/roadHill2W.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 71,
+   "image": "../tilesets/kenney_roads/png/roadHillE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 72,
+   "image": "../tilesets/kenney_roads/png/roadHillN.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 73,
+   "image": "../tilesets/kenney_roads/png/roadHillS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 74,
+   "image": "../tilesets/kenney_roads/png/roadHillW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 75,
+   "image": "../tilesets/kenney_roads/png/roadNE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 76,
+   "image": "../tilesets/kenney_roads/png/roadNS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 77,
+   "image": "../tilesets/kenney_roads/png/roadNW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 78,
+   "image": "../tilesets/kenney_roads/png/roadSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 79,
+   "image": "../tilesets/kenney_roads/png/treeAltShort.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 80,
+   "image": "../tilesets/kenney_roads/png/treeAltTall.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 81,
+   "image": "../tilesets/kenney_roads/png/treeShort.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 82,
+   "image": "../tilesets/kenney_roads/png/treeTall.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 83,
+   "image": "../tilesets/kenney_roads/png/water.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 84,
+   "image": "../tilesets/kenney_roads/png/waterCornerES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 85,
+   "image": "../tilesets/kenney_roads/png/waterCornerNE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 86,
+   "image": "../tilesets/kenney_roads/png/waterCornerNW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 87,
+   "image": "../tilesets/kenney_roads/png/waterCornerSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 88,
+   "image": "../tilesets/kenney_roads/png/waterE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 89,
+   "image": "../tilesets/kenney_roads/png/waterES.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 90,
+   "image": "../tilesets/kenney_roads/png/waterN.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 91,
+   "image": "../tilesets/kenney_roads/png/waterNE.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 92,
+   "image": "../tilesets/kenney_roads/png/waterNW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 93,
+   "image": "../tilesets/kenney_roads/png/waterS.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 94,
+   "image": "../tilesets/kenney_roads/png/waterSW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  },
+  {
+   "id": 95,
+   "image": "../tilesets/kenney_roads/png/waterW.png",
+   "imageheight": 65,
+   "imagewidth": 100
+  }
+ ],
+ "type": "tileset",
+ "version": "1.10"
+}

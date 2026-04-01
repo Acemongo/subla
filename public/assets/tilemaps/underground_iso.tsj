@@ -1,0 +1,15 @@
+{
+  "columns": 2,
+  "image": "../tilesets/underground_iso.png",
+  "imageheight": 128,
+  "imagewidth": 128,
+  "margin": 0,
+  "name": "underground_iso",
+  "spacing": 0,
+  "tilecount": 8,
+  "tiledversion": "1.10.0",
+  "tileheight": 32,
+  "tilewidth": 64,
+  "type": "tileset",
+  "version": "1.10"
+}
