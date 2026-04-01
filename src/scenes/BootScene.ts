@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { parseTiledMap } from '../world/TiledMapLoader';
 
 const MAP_KEY = 'level1';
 const MAP_PATH = 'assets/tilemaps/level1.json';
@@ -26,14 +27,21 @@ export class BootScene extends Phaser.Scene {
       progressBar.fillRect(width / 2 - 150, height / 2 - 15, 300 * value, 30);
     });
 
+    // Load map JSON first, then dynamically queue all tile images it needs
     this.load.json(MAP_KEY, MAP_PATH);
-    this.load.json('kenney-dungeon-tsj', 'assets/tilemaps/kenney-dungeon.tsj');
 
-    // Dungeon floor + wall tiles
-    const iso = 'assets/tilesets/kenney_miniature_dungeon/Isometric/';
-    this.load.image('chestClosed_E',  iso + 'chestClosed_E.png');
-    this.load.image('dirtTiles_E',    iso + 'dirtTiles_E.png');
-    this.load.image('stoneWallAged_E', iso + 'stoneWallAged_E.png');
+    this.load.on(`filecomplete-json-${MAP_KEY}`, () => {
+      const mapData = this.cache.json.get(MAP_KEY);
+      try {
+        const loaded = parseTiledMap(mapData);
+        for (const [key, path] of loaded.tileImages) {
+          this.load.image(key, path);
+        }
+        this.load.start();
+      } catch (e) {
+        console.error('[BootScene] Failed to parse map for tile preloading:', e);
+      }
+    });
 
     // Character sprites — 8 directions (0–7), idle + 10 run frames each
     const charBase = 'assets/tilesets/kenney_miniature_dungeon/Characters/Male/';

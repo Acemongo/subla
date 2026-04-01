@@ -29,10 +29,7 @@ function velocityToDir(vx: number, vy: number): number {
   const sector = Math.round(a / 45) % 8;
   // sector: 0=E, 1=SE, 2=S, 3=SW, 4=W, 5=NW, 6=N, 7=NE
   // Kenney:  5    4     3    2     1    0     7    6
-  // Map screen-space angle sectors to Kenney sprite directions
-  // Kenney dirs: 0=NW, 1=W, 2=SW, 3=S, 4=SE, 5=E, 6=NE, 7=N
-  // sector 0=E→5, 1=SE→4, 2=S→3, 3=SW→2, 4=W→1, 5=NW→0, 6=N→7, 7=NE→6
-  const sectorToDir = [5, 4, 3, 2, 1, 0, 7, 6];
+  const sectorToDir = [1, 2, 7, 6, 5, 4, 3, 0];
   return sectorToDir[sector];
 }
 
