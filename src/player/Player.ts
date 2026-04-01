@@ -38,14 +38,14 @@ const ISO = {
 //   Down  = 135° = down-right = Male_4
 //   Left  = 225° = down-left = Male_2
 function keysToDir(up: boolean, down: boolean, left: boolean, right: boolean): number {
-  if (up    && !down  && !left  && !right) return 0; // up-left   (315°)
-  if (right && !up    && !down  && !left)  return 6; // up-right  (45°)
-  if (down  && !up    && !left  && !right) return 4; // down-right (135°)
-  if (left  && !up    && !down  && !right) return 2; // down-left  (225°)
-  if (up    && right)                      return 7; // up         (0°)
-  if (right && down)                       return 5; // right      (90°)
-  if (down  && left)                       return 3; // down       (180°)
-  if (left  && up)                         return 1; // left       (270°)
+  if (up    && !down  && !left  && !right) return 6; // up-right  (45°)
+  if (right && !up    && !down  && !left)  return 0; // up-left   (315°)
+  if (down  && !up    && !left  && !right) return 2; // down-left (225°)
+  if (left  && !up    && !down  && !right) return 4; // down-right(135°)
+  if (up    && right)                      return 7; // up        (0°)
+  if (right && down)                       return 1; // left      (270°)
+  if (down  && left)                       return 3; // down      (180°)
+  if (left  && up)                         return 5; // right     (90°)
   return 0;
 }
 
