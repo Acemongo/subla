@@ -2,12 +2,16 @@ import Phaser from 'phaser';
 
 const SPEED = 200;
 
-// Isometric movement: WASD maps to iso grid directions
+// Isometric movement vectors
+// Up/W   → 315° NW → up-left on screen
+// Down/S → 135° SE → down-right on screen
+// Left/A → 225° SW → down-left on screen
+// Right/D→  45° NE → up-right on screen
 const ISO = {
-  north: { x:  1,    y: -0.5 },
-  south: { x: -1,    y:  0.5 },
-  west:  { x: -1,    y: -0.5 },
-  east:  { x:  1,    y:  0.5 },
+  up:    { x: -1, y: -0.5 },
+  down:  { x:  1, y:  0.5 },
+  left:  { x: -1, y:  0.5 },
+  right: { x:  1, y: -0.5 },
 };
 
 // Kenney sprite directions (confirmed by visual inspection):
@@ -23,13 +27,19 @@ const ISO = {
 //   S+D            → screen down       = S sprite  (3)
 //   S+A            → screen left       = W sprite  (1)
 function velocityToDir(vx: number, vy: number): number {
+  // atan2 returns angle from positive X axis, counterclockwise
+  // We remap to clockwise from right (East)
   const angle = Math.atan2(vy, vx) * (180 / Math.PI);
   const a = (angle + 360) % 360;
-  // 8 sectors, each 45deg. 0=right(E=5), going clockwise
+
+  // 8 sectors of 45° each, starting from East (0°) going clockwise:
+  // 0=E, 1=SE, 2=S, 3=SW, 4=W, 5=NW, 6=N, 7=NE
   const sector = Math.round(a / 45) % 8;
-  // sector: 0=E, 1=SE, 2=S, 3=SW, 4=W, 5=NW, 6=N, 7=NE
-  // Kenney:  5    4     3    2     1    0     7    6
-  const sectorToDir = [1, 2, 7, 6, 5, 4, 3, 0];
+
+  // Map sector → Kenney sprite direction index
+  // Kenney: 0=NW, 1=W, 2=SW, 3=S, 4=SE, 5=E, 6=NE, 7=N
+  // sector:  0=E→5, 1=SE→4, 2=S→3, 3=SW→2, 4=W→1, 5=NW→0, 6=N→7, 7=NE→6
+  const sectorToDir = [5, 4, 3, 2, 1, 0, 7, 6];
   return sectorToDir[sector];
 }
 
@@ -76,10 +86,10 @@ export class Player {
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
 
     let vx = 0, vy = 0;
-    if (up)    { vx += ISO.north.x; vy += ISO.north.y; }
-    if (down)  { vx += ISO.south.x; vy += ISO.south.y; }
-    if (left)  { vx += ISO.west.x;  vy += ISO.west.y;  }
-    if (right) { vx += ISO.east.x;  vy += ISO.east.y;  }
+    if (up)    { vx += ISO.up.x;    vy += ISO.up.y;    }
+    if (down)  { vx += ISO.down.x;  vy += ISO.down.y;  }
+    if (left)  { vx += ISO.left.x;  vy += ISO.left.y;  }
+    if (right) { vx += ISO.right.x; vy += ISO.right.y; }
 
     const len = Math.sqrt(vx * vx + vy * vy);
     this.moving = len > 0;
