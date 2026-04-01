@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 const MAP_KEY = 'level1';
-const MAP_PATH = 'assets/tilemaps/level1.jason.tmj';
+const MAP_PATH = 'assets/tilemaps/level1.json';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
