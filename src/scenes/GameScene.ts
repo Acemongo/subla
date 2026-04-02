@@ -14,8 +14,7 @@ export class GameScene extends Phaser.Scene {
     right: Phaser.Input.Keyboard.Key;
   };
   private userId: string | null = null;
-  private saveTimer = 0;
-  private readonly SAVE_INTERVAL = 10000;
+
 
   constructor() {
     super({ key: 'GameScene' });
@@ -84,18 +83,12 @@ export class GameScene extends Phaser.Scene {
     this.player.updateDepth(this.worldMap.offsetX, this.worldMap.offsetY, this.worldMap.renderer?.tileH);
 
 
-    if (this.userId) {
-      this.saveTimer += delta;
-      if (this.saveTimer >= this.SAVE_INTERVAL) {
-        this.saveTimer = 0;
-        this.persistPlayerState();
-      }
-    }
+
   }
 
-  private persistPlayerState(): void {
-    if (!this.userId) return;
-    savePlayerState({
+  async persistPlayerState(): Promise<void> {
+    if (!this.userId || !this.player) return;
+    await savePlayerState({
       user_id: this.userId,
       x: Math.round(this.player.sprite.x),
       y: Math.round(this.player.sprite.y),
