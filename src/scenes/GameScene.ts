@@ -61,9 +61,9 @@ export class GameScene extends Phaser.Scene {
       .setScrollFactor(0);
 
     this.add
-      .text(16, 46, 'v0.1.0', {
+      .text(16, 46, 'v0.1.1', {
         fontSize: '11px',
-        color: '#ffffff',
+        color: '#e0d0ff',
         backgroundColor: '#00000066',
         padding: { x: 8, y: 3 },
       })
