@@ -21,7 +21,7 @@ export class GameScene extends Phaser.Scene {
     super({ key: 'GameScene' });
   }
 
-  async create(): Promise<void> {
+  create(): void {
     this.worldMap = new WorldMap(this);
     this.worldMap.createFromTiledJSON('level1');
 
@@ -30,24 +30,9 @@ export class GameScene extends Phaser.Scene {
       Math.floor(this.worldMap.mapCols / 2),
       Math.floor(this.worldMap.mapRows / 2)
     );
-    let startX = spawnCenter.x;
-    let startY = spawnCenter.y;
-    let savedGear: Record<string, string | null> | undefined;
 
-    this.userId = await getCurrentUserId();
-    if (this.userId) {
-      const saved = await loadPlayerState(this.userId);
-      if (saved) {
-        startX = saved.x;
-        startY = saved.y;
-        savedGear = saved.gear;
-      }
-    }
-
-    this.player = new Player(this, startX, startY);
-    if (savedGear) this.player.gear = savedGear;
-
-    // Wire wall collision
+    // Spawn at default position immediately — async load will reposition if needed
+    this.player = new Player(this, spawnCenter.x, spawnCenter.y);
     this.player.addWallCollider(this.worldMap.wallGroup);
 
     this.cameras.main.startFollow(this.player.sprite, true, 0.08, 0.08);
@@ -72,7 +57,19 @@ export class GameScene extends Phaser.Scene {
       })
       .setScrollFactor(0);
 
+    // Async: load saved position in background, reposition if found
+    this.loadSavedState();
+  }
 
+  private async loadSavedState(): Promise<void> {
+    this.userId = await getCurrentUserId();
+    if (!this.userId) return;
+
+    const saved = await loadPlayerState(this.userId);
+    if (saved && this.player) {
+      this.player.sprite.setPosition(saved.x, saved.y);
+      if (saved.gear) this.player.gear = saved.gear;
+    }
   }
 
   update(_time: number, delta: number): void {
