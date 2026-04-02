@@ -51,6 +51,12 @@ export class GameScene extends Phaser.Scene {
     this.game.canvas.setAttribute('tabindex', '0');
     this.game.canvas.focus();
 
+    // Reset any stale key states carried over from HTML form inputs
+    // (auth form / character create form can leave keys "stuck" as isDown)
+    this.input.keyboard!.resetKeys();
+    // Belt-and-suspenders: reset again after one frame in case of async residue
+    this.time.delayedCall(100, () => this.input.keyboard?.resetKeys());
+
     this.add
       .text(16, 16, '🗺 Subterranean Los Angeles', {
         fontSize: '18px',
@@ -61,7 +67,7 @@ export class GameScene extends Phaser.Scene {
       .setScrollFactor(0);
 
     this.add
-      .text(16, 46, 'v0.1.1', {
+      .text(16, 46, 'v0.1.2', {
         fontSize: '11px',
         color: '#e0d0ff',
         backgroundColor: '#00000066',
