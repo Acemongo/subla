@@ -615,8 +615,10 @@ export class CharacterCreateScene extends Phaser.Scene {
 
     this.time.delayedCall(800, () => {
       this.cleanup();
-      // Small extra delay to ensure DOM is fully removed before Phaser scene starts
       setTimeout(() => {
+        // Return focus to the canvas so Phaser keyboard input works immediately
+        const canvas = this.game.canvas;
+        canvas.focus();
         this.scene.start('GameScene', { character });
       }, 50);
     });

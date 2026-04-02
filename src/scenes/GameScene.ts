@@ -47,6 +47,16 @@ export class GameScene extends Phaser.Scene {
 
     this.scene.launch('UIScene');
 
+    // Ensure canvas is focusable and has focus for keyboard input
+    const canvas = this.game.canvas;
+    canvas.setAttribute('tabindex', '0');
+    canvas.focus();
+
+    // Reset all keys when canvas loses focus to prevent sticky keys
+    canvas.addEventListener('blur', () => {
+      this.input.keyboard?.resetKeys();
+    });
+
     this.add
       .text(16, 16, '🗺 Subterranean Los Angeles', {
         fontSize: '18px',
