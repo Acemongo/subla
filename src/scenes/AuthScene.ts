@@ -164,7 +164,13 @@ export class AuthScene extends Phaser.Scene {
 
   private launchGame(): void {
     this.cleanup();
-    this.scene.start('BootScene');
+    // Refocus canvas so Phaser receives keyup events after HTML form steals focus
+    setTimeout(() => {
+      const canvas = this.game.canvas;
+      canvas.setAttribute('tabindex', '0');
+      canvas.focus();
+      this.scene.start('BootScene');
+    }, 50);
   }
 
   private cleanup(): void {

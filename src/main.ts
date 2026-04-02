@@ -21,4 +21,13 @@ supabase.auth.onAuthStateChange((event) => {
 
 const game = new Phaser.Game(gameConfig);
 
+// Prevent sticky keys: when the window loses focus, synthetically release
+// all movement keys so Phaser doesn't see them as held.
+const MOVEMENT_KEYS = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','w','a','s','d','W','A','S','D'];
+window.addEventListener('blur', () => {
+  MOVEMENT_KEYS.forEach(k => {
+    window.dispatchEvent(new KeyboardEvent('keyup', { key: k, bubbles: true }));
+  });
+});
+
 export default game;
