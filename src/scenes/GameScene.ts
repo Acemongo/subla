@@ -67,13 +67,14 @@ export class GameScene extends Phaser.Scene {
       .setScrollFactor(0);
 
     this.add
-      .text(16, 44, 'v0.1.0', {
+      .text(16, 46, 'v0.1.0', {
         fontSize: '11px',
-        color: '#4a3a6a',
+        color: '#8870cc',
         backgroundColor: '#00000066',
         padding: { x: 8, y: 3 },
       })
-      .setScrollFactor(0);
+      .setScrollFactor(0)
+      .setDepth(100);
 
     // Async: load saved position in background, reposition if found
     this.loadSavedState();
