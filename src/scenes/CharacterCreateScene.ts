@@ -235,6 +235,7 @@ export class CharacterCreateScene extends Phaser.Scene {
     };
 
     this.container = document.createElement('div');
+    this.container.dataset.sublaOverlay = 'character-create';
     this.container.style.cssText = `
       position: fixed; inset: 0;
       background: #0d0520;
@@ -614,7 +615,10 @@ export class CharacterCreateScene extends Phaser.Scene {
 
     this.time.delayedCall(800, () => {
       this.cleanup();
-      this.scene.start('GameScene', { character });
+      // Small extra delay to ensure DOM is fully removed before Phaser scene starts
+      setTimeout(() => {
+        this.scene.start('GameScene', { character });
+      }, 50);
     });
   }
 
@@ -626,9 +630,15 @@ export class CharacterCreateScene extends Phaser.Scene {
     if (this.container?.parentNode) {
       this.container.parentNode.removeChild(this.container);
     }
+    // Belt-and-suspenders: remove any stray overlays with this z-index
+    document.querySelectorAll<HTMLElement>('[data-subla-overlay]').forEach(el => el.remove());
   }
 
   shutdown(): void {
+    this.cleanup();
+  }
+
+  destroy(): void {
     this.cleanup();
   }
 }

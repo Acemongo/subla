@@ -32,24 +32,24 @@ const ISO = {
 // Male_4 = down-right (135°)Male_5 = right (90°)
 // Male_6 = up-right (45°)   Male_7 = up (0°)
 //
-// Key → heading → sprite:
-//   Up(W)    = 315° = NW = up-left    = Male_0
-//   Right(D) =  45° = NE = up-right   = Male_6
-//   Down(S)  = 135° = SE = down-right = Male_4
-//   Left(A)  = 225° = SW = down-left  = Male_2
-//   W+D      =   0° = N  = up         = Male_7
-//   D+S      =  90° = E  = right      = Male_5
-//   S+A      = 180° = S  = down       = Male_3
-//   A+W      = 270° = W  = left       = Male_1
+// Key → heading → sprite (confirmed by visual inspection on localhost):
+//   Up(W)    = up-right  = Male_6
+//   Right(D) = up-left   = Male_0
+//   Down(S)  = down-left = Male_2
+//   Left(A)  = down-right= Male_4
+//   W+D      = up        = Male_7
+//   D+S      = left      = Male_1
+//   S+A      = down      = Male_3
+//   A+W      = right     = Male_5
 function keysToDir(up: boolean, down: boolean, left: boolean, right: boolean): number {
-  if (up    && !down  && !left  && !right) return 0; // NW = Male_0
-  if (right && !up    && !down  && !left)  return 6; // NE = Male_6
-  if (down  && !up    && !left  && !right) return 4; // SE = Male_4
-  if (left  && !up    && !down  && !right) return 2; // SW = Male_2
-  if (up    && right)                      return 7; // N  = Male_7
-  if (right && down)                       return 5; // E  = Male_5
-  if (down  && left)                       return 3; // S  = Male_3
-  if (left  && up)                         return 1; // W  = Male_1
+  if (up    && !down  && !left  && !right) return 6;
+  if (right && !up    && !down  && !left)  return 0;
+  if (down  && !up    && !left  && !right) return 2;
+  if (left  && !up    && !down  && !right) return 4;
+  if (up    && right)                      return 7;
+  if (right && down)                       return 1;
+  if (down  && left)                       return 3;
+  if (left  && up)                         return 5;
   return 0;
 }
 
