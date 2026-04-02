@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { AuthScene } from '../scenes/AuthScene';
 import { BootScene } from '../scenes/BootScene';
+import { CharacterCheckScene } from '../scenes/CharacterCheckScene';
+import { CharacterCreateScene } from '../scenes/CharacterCreateScene';
 import { GameScene } from '../scenes/GameScene';
 import { UIScene } from '../scenes/UIScene';
 
@@ -9,7 +11,7 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
   width: 1280,
   height: 720,
   backgroundColor: '#1a0a2e',
-  scene: [AuthScene, BootScene, GameScene, UIScene],
+  scene: [AuthScene, BootScene, CharacterCheckScene, CharacterCreateScene, GameScene, UIScene],
   physics: {
     default: 'arcade',
     arcade: {
