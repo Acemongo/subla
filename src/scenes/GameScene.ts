@@ -69,7 +69,7 @@ export class GameScene extends Phaser.Scene {
     this.add
       .text(16, 46, 'v0.1.0', {
         fontSize: '11px',
-        color: '#8870cc',
+        color: '#ffffff',
         backgroundColor: '#00000066',
         padding: { x: 8, y: 3 },
       })
