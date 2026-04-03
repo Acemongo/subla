@@ -220,12 +220,13 @@ export class GameScene extends Phaser.Scene {
   async persistPlayerState(): Promise<void> {
     if (!this.userId || !this.player) return;
     const grid = this.worldMap.screenToGrid(this.player.sprite.x, this.player.sprite.y);
+    console.log('[GameScene] Saving grid:', grid, 'sprite pos:', Math.round(this.player.sprite.x), Math.round(this.player.sprite.y));
     await savePlayerState({
       user_id: this.userId,
       x: Math.round(this.player.sprite.x),
       y: Math.round(this.player.sprite.y),
-      grid_col: grid?.col,
-      grid_row: grid?.row,
+      grid_col: grid?.col ?? 8,
+      grid_row: grid?.row ?? 6,
       depth: 0,
       gear: {},
       inventory: this.inventory.toSaveData(),
