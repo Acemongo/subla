@@ -51,19 +51,40 @@ export class UIScene extends Phaser.Scene {
       backgroundColor: '#00000077', padding: { x: 6, y: 3 },
     });
 
-    // ---- Save & Quit (bottom-right) ----
-    const quitBtn = this.add
-      .text(width - 16, height - 40, '💾 Save & Quit', {
+    // ---- Save button ----
+    const saveBtn = this.add
+      .text(width - 16, height - 40, '💾 Save', {
+        fontSize: '13px', color: '#a0c0a0',
+        backgroundColor: '#00000077', padding: { x: 6, y: 3 },
+      })
+      .setOrigin(1, 1)
+      .setInteractive({ useHandCursor: true });
+
+    saveBtn.on('pointerover', () => saveBtn.setColor('#80ff80'));
+    saveBtn.on('pointerout',  () => saveBtn.setColor('#a0c0a0'));
+    saveBtn.on('pointerup', async () => {
+      saveBtn.setText('💾 Saving...').setColor('#ffcc88').disableInteractive();
+      const gameScene = this.scene.get('GameScene') as any;
+      if (gameScene?.persistPlayerState) await gameScene.persistPlayerState();
+      saveBtn.setText('💾 Saved!').setColor('#60e060');
+      this.time.delayedCall(1500, () => {
+        saveBtn.setText('💾 Save').setColor('#a0c0a0').setInteractive({ useHandCursor: true });
+      });
+    });
+
+    // ---- Sign Out button ----
+    const signOutBtn = this.add
+      .text(width - 16, height - 64, '🚪 Sign Out', {
         fontSize: '13px', color: '#a08080',
         backgroundColor: '#00000077', padding: { x: 6, y: 3 },
       })
       .setOrigin(1, 1)
       .setInteractive({ useHandCursor: true });
 
-    quitBtn.on('pointerover', () => quitBtn.setColor('#ffcc88'));
-    quitBtn.on('pointerout',  () => quitBtn.setColor('#a08080'));
-    quitBtn.on('pointerdown', async () => {
-      quitBtn.setText('💾 Saving...').setColor('#ffcc88').disableInteractive();
+    signOutBtn.on('pointerover', () => signOutBtn.setColor('#ff9090'));
+    signOutBtn.on('pointerout',  () => signOutBtn.setColor('#a08080'));
+    signOutBtn.on('pointerup', async () => {
+      signOutBtn.setText('🚪 Saving...').setColor('#ffcc88').disableInteractive();
       const gameScene = this.scene.get('GameScene') as any;
       if (gameScene?.persistPlayerState) await gameScene.persistPlayerState();
       await supabase.auth.signOut();
