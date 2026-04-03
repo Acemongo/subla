@@ -63,22 +63,25 @@ export class WorldMap {
     this.renderer.renderMap(loaded.grid, this.offsetX, this.offsetY);
 
     // Build wall collision bodies for solid tiles.
-    // isoToScreen gives the top-center of the diamond. The IsoRenderer anchors
-    // sprites at bottom-center (origin 0.5, 1), so the diamond base sits at
-    // y + tileH. We place our collider at the diamond center = y + tileH/2,
-    // sized to approximate the diamond footprint as a rectangle.
+    // IsoRenderer anchors all tile sprites at bottom-center (origin 0.5, 1).
+    // isoToScreen returns the top-left of the iso diamond in grid space.
+    // The rendered sprite bottom = y + offsetY (where the diamond base sits).
+    // We place colliders at the diamond base center, sized to the diamond footprint.
     const tileW = loaded.tileW;
     const tileH = loaded.tileH;
-    const bodyW = tileW * 0.9;   // slightly narrower than full diamond width
-    const bodyH = tileH * 0.6;   // covers the diamond height
+    const bodyW = tileW * 0.85;  // slightly inside the diamond width
+    const bodyH = tileH * 0.55;  // iso diamond height
 
     for (let row = 0; row < loaded.height; row++) {
       for (let col = 0; col < loaded.width; col++) {
         const tile = loaded.grid[row][col];
-        if (!tile?.solid) continue;
+        // Block walls AND empty/void tiles (null = no tile = void)
+        if (tile !== null && !tile.solid) continue;
         const { x, y } = isoToScreen(col, row, tileW, tileH);
         const wx = x + this.offsetX;
-        const wy = y + this.offsetY + tileH * 0.5; // diamond center
+        // Diamond base is at bottom of image (origin 1) = y + offsetY
+        // Center the body on the diamond: shift up by half the diamond height
+        const wy = y + this.offsetY - tileH * 0.25;
         const body = this.scene.add.rectangle(wx, wy, bodyW, bodyH, 0xff0000, 0);
         this.scene.physics.add.existing(body, true);
         this.wallGroup.add(body);
