@@ -41,6 +41,7 @@ export class GameScene extends Phaser.Scene {
 
     // Spawn at center open floor area (col=8, row=6 confirmed walkable)
     const spawnCenter = this.worldMap.gridToScreen(8, 6);
+    console.log('[GameScene] Spawn position:', spawnCenter.x, spawnCenter.y);
 
     this.player = new Player(this, spawnCenter.x, spawnCenter.y);
     this.player.addWallCollider(this.worldMap.wallGroup);
