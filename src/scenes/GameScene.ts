@@ -171,36 +171,78 @@ export class GameScene extends Phaser.Scene {
     this.player.updateDepth(this.worldMap.offsetX, this.worldMap.offsetY, this.worldMap.renderer?.tileH);
   }
 
+  private pathDebugGraphics?: Phaser.GameObjects.Graphics;
+
   private handleClickNavigation(pointer: Phaser.Input.Pointer): void {
-    // Convert screen click to world coordinates
     const worldX = pointer.worldX;
     const worldY = pointer.worldY;
 
-    // Convert world pos to grid cell
     const gridPos = this.worldMap.screenToGrid(worldX, worldY);
     if (!gridPos) return;
 
-    // Get player's current grid position
     const playerGrid = this.worldMap.screenToGrid(
       this.player.sprite.x,
       this.player.sprite.y,
     );
     if (!playerGrid) return;
 
-    // Pathfind
     const path = findPath(this.worldMap.walkable, playerGrid, gridPos);
+
+    // Clear previous debug drawing
+    this.pathDebugGraphics?.destroy();
+    this.pathDebugGraphics = this.add.graphics();
+    const g = this.pathDebugGraphics;
+
+    // Draw target tile diamond outline (yellow)
+    const target = this.worldMap.gridToScreen(gridPos.col, gridPos.row);
+    const tW = this.worldMap.renderer?.tileW ?? 256;
+    const tH = this.worldMap.renderer?.tileH ?? 128;
+    g.lineStyle(3, 0xffff00, 1);
+    g.beginPath();
+    g.moveTo(target.x + tW / 2, target.y);          // right
+    g.lineTo(target.x + tW,     target.y + tH / 2); // bottom
+    g.lineTo(target.x + tW / 2, target.y + tH);     // left
+    g.lineTo(target.x,          target.y + tH / 2); // top
+    g.closePath();
+    g.strokePath();
+
     if (!path || path.length === 0) {
+      // No path — draw red X on target
+      g.lineStyle(3, 0xff0000, 1);
+      g.lineBetween(target.x, target.y, target.x + tW, target.y + tH);
+      g.lineBetween(target.x + tW, target.y, target.x, target.y + tH);
       this.player.clearPath();
       return;
     }
 
-    // Convert grid path to screen waypoints
+    // Draw path dots + connecting lines (cyan)
+    g.lineStyle(2, 0x00ffff, 0.8);
     const waypoints = path.map(p => {
-      const screen = this.worldMap.gridToScreen(p.col, p.row);
-      return { x: screen.x + (this.worldMap.renderer?.tileW ?? 256) / 2, y: screen.y };
+      const s = this.worldMap.gridToScreen(p.col, p.row);
+      // Center of tile diamond
+      return { x: s.x + tW / 2, y: s.y + tH / 2 };
     });
 
+    // Line from player to first waypoint
+    g.lineBetween(this.player.sprite.x, this.player.sprite.y, waypoints[0].x, waypoints[0].y);
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      g.lineBetween(waypoints[i].x, waypoints[i].y, waypoints[i+1].x, waypoints[i+1].y);
+    }
+
+    // Dots at each waypoint
+    g.fillStyle(0x00ffff, 1);
+    for (const wp of waypoints) {
+      g.fillCircle(wp.x, wp.y, 6);
+    }
+
+    // Set path using tile centers as waypoints
     this.player.setPath(waypoints);
+
+    // Auto-clear debug after 5s
+    this.time.delayedCall(5000, () => {
+      this.pathDebugGraphics?.destroy();
+      this.pathDebugGraphics = undefined;
+    });
   }
 
   async persistPlayerState(): Promise<void> {
