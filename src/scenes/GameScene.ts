@@ -216,7 +216,14 @@ export class GameScene extends Phaser.Scene {
 
   async persistPlayerState(): Promise<void> {
     if (!this.userId || !this.player) return;
-    console.log('[GameScene] Saving position:', this.player.sprite.x, this.player.sprite.y, '| grid:', this.worldMap.screenToGrid(this.player.sprite.x, this.player.sprite.y));
+    const grid = this.worldMap.screenToGrid(this.player.sprite.x, this.player.sprite.y);
+    const msg = `Saving: x=${Math.round(this.player.sprite.x)} y=${Math.round(this.player.sprite.y)} grid=${JSON.stringify(grid)}`;
+    console.log('[GameScene]', msg);
+    // Show on screen so it's readable before page reloads
+    const div = document.createElement('div');
+    div.style.cssText = 'position:fixed;bottom:60px;left:16px;background:#000a;color:#0f0;font:12px monospace;padding:6px;z-index:9999;white-space:pre';
+    div.textContent = msg;
+    document.body.appendChild(div);
     await savePlayerState({
       user_id: this.userId,
       x: Math.round(this.player.sprite.x),
