@@ -29,6 +29,7 @@ export class GameScene extends Phaser.Scene {
   // Inventory
   public inventory!: InventoryClass;
   private inventoryUI!: InventoryUI;
+  private lastClickTime = 0;
 
   constructor() {
     super({ key: 'GameScene' });
@@ -69,10 +70,18 @@ export class GameScene extends Phaser.Scene {
     };
     this.iKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
 
-    // Click/tap to navigate
+    // Double-click/tap to navigate (single click reserved for inspect/interact)
+    this.input.on('pointermove', () => { /* keep pointer active */ });
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (this.inventoryUI.isVisible()) return;
-      this.handleClickNavigation(pointer);
+      if (pointer.downTime - (this.lastClickTime ?? 0) < 400) {
+        // Double click
+        this.handleClickNavigation(pointer);
+        this.lastClickTime = 0;
+      } else {
+        // Single click — store time, handle interact later
+        this.lastClickTime = pointer.downTime;
+      }
     });
 
     this.scene.launch('UIScene');
