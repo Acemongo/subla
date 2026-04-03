@@ -14,6 +14,17 @@ export class UIScene extends Phaser.Scene {
   create(): void {
     const { width, height } = this.cameras.main;
 
+    // ---- Title (top-center) ----
+    this.add.text(width / 2, 10, '🗺 Subterranean Los Angeles', {
+      fontSize: '18px', color: '#c0a0ff',
+      backgroundColor: '#00000066', padding: { x: 8, y: 4 },
+    }).setOrigin(0.5, 0);
+
+    this.add.text(width / 2, 40, 'v0.1.3', {
+      fontSize: '11px', color: '#e0d0ff',
+      backgroundColor: '#00000066', padding: { x: 8, y: 3 },
+    }).setOrigin(0.5, 0);
+
     // ---- HP bar (top-left) ----
     const barX = 16, barY = 16, barW = 160, barH = 14;
 

@@ -90,15 +90,7 @@ export class GameScene extends Phaser.Scene {
     this.time.delayedCall(100, () => this.input.keyboard?.resetKeys());
 
     const { width } = this.cameras.main;
-    this.add.text(width / 2, 16, '🗺 Subterranean Los Angeles', {
-      fontSize: '18px', color: '#c0a0ff',
-      backgroundColor: '#00000066', padding: { x: 8, y: 4 },
-    }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(1000);
 
-    this.add.text(width / 2, 46, 'v0.1.3', {
-      fontSize: '11px', color: '#e0d0ff',
-      backgroundColor: '#00000066', padding: { x: 8, y: 3 },
-    }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(1000);
 
     this.loadSavedState();
   }
