@@ -119,15 +119,9 @@ export class GameScene extends Phaser.Scene {
     // Load world state + inventory
     const saved = await loadPlayerState(this.userId);
     if (saved) {
-      // Only restore saved position if it maps to a walkable tile
+      // Restore saved position if it exists
       if (this.player && saved.x && saved.y) {
-        const grid = this.worldMap.screenToGrid(saved.x, saved.y);
-        const isWalkable = grid &&
-          this.worldMap.walkable[grid.row]?.[grid.col] === true;
-        if (isWalkable) {
-          this.player.sprite.setPosition(saved.x, saved.y);
-        }
-        // Otherwise keep the default spawn position
+        this.player.sprite.setPosition(saved.x, saved.y);
       }
       if (saved.current_health != null) this.currentHp   = saved.current_health;
       if (saved.current_wild   != null) this.currentWild = saved.current_wild;
