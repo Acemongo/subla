@@ -62,29 +62,31 @@ export class WorldMap {
 
     this.renderer.renderMap(loaded.grid, this.offsetX, this.offsetY);
 
-    // Build wall collision bodies for solid tiles.
-    // IsoRenderer anchors all tile sprites at bottom-center (origin 0.5, 1).
-    // isoToScreen returns the top-left of the iso diamond in grid space.
-    // The rendered sprite bottom = y + offsetY (where the diamond base sits).
-    // We place colliders at the diamond base center, sized to the diamond footprint.
+    // Approximate isometric diamond footprint using 3 stacked rectangles.
+    // Sprite origin=(0.5,1): image bottom = y+offsetY = ground level.
+    // Diamond center = y+offsetY - tileH*0.5
+    // 3-slice hexagonal approximation (wide middle, narrow top+bottom):
     const tileW = loaded.tileW;
     const tileH = loaded.tileH;
-    const bodyW = tileW * 0.85;  // slightly inside the diamond width
-    const bodyH = tileH * 0.55;  // iso diamond height
+    const slices = [
+      { dy: -tileH * 0.25, w: tileW * 0.42, h: tileH * 0.22 },  // top narrow
+      { dy:  0,             w: tileW * 0.80, h: tileH * 0.28 },  // wide middle
+      { dy:  tileH * 0.25, w: tileW * 0.42, h: tileH * 0.22 },  // bottom narrow
+    ];
 
     for (let row = 0; row < loaded.height; row++) {
       for (let col = 0; col < loaded.width; col++) {
         const tile = loaded.grid[row][col];
-        // Only block explicitly solid tiles (walls etc) — floor tiles are traversable
         if (!tile?.solid) continue;
         const { x, y } = isoToScreen(col, row, tileW, tileH);
         const wx = x + this.offsetX;
-        // Sprite origin=(0.5,1): image bottom = y+offsetY = ground level.
-        // Place collider right at ground level (diamond base).
-        const wy = y + this.offsetY;
-        const body = this.scene.add.rectangle(wx, wy, bodyW, bodyH, 0xff0000, 0);
-        this.scene.physics.add.existing(body, true);
-        this.wallGroup.add(body);
+        const wyCtr = y + this.offsetY - tileH * 0.5; // diamond center
+
+        for (const slice of slices) {
+          const body = this.scene.add.rectangle(wx, wyCtr + slice.dy, slice.w, slice.h, 0x00ffff, 0);
+          this.scene.physics.add.existing(body, true);
+          this.wallGroup.add(body);
+        }
       }
     }
 
