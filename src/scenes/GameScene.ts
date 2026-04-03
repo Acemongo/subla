@@ -190,7 +190,7 @@ export class GameScene extends Phaser.Scene {
 
     // Clear previous debug drawing
     this.pathDebugGraphics?.destroy();
-    this.pathDebugGraphics = this.add.graphics();
+    this.pathDebugGraphics = this.add.graphics().setDepth(500);
     const g = this.pathDebugGraphics;
 
     // Draw target tile diamond outline (yellow)
