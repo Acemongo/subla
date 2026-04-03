@@ -90,8 +90,30 @@ export class WorldMap {
       }
     }
 
-    this.scene.physics.world.setBounds(0, 0, size.width + this.offsetX, size.height + this.offsetY * 2);
-    this.scene.cameras.main.setBounds(0, 0, size.width + this.offsetX, size.height + this.offsetY * 2);
+    const totalW = size.width + this.offsetX;
+    const totalH = size.height + this.offsetY * 2;
+    this.scene.physics.world.setBounds(0, 0, totalW, totalH);
+    this.scene.cameras.main.setBounds(0, 0, totalW, totalH);
+
+    // Block the triangular void corners using per-row edge colliders.
+    // The iso diamond layout leaves gaps at corners — add invisible walls there.
+    for (let row = 0; row < loaded.height; row++) {
+      const { x: leftX,  y: rowY } = isoToScreen(0, row, tileW, tileH);
+      const { x: rightX }          = isoToScreen(loaded.width - 1, row, tileW, tileH);
+      const wy = rowY + this.offsetY - tileH * 0.5;
+
+      // Left void wall
+      const lb = this.scene.add.rectangle(
+        leftX + this.offsetX - tileW * 0.5, wy, tileW, tileH * 0.6, 0x0000ff, 0);
+      this.scene.physics.add.existing(lb, true);
+      this.wallGroup.add(lb);
+
+      // Right void wall
+      const rb = this.scene.add.rectangle(
+        rightX + this.offsetX + tileW * 1.5, wy, tileW, tileH * 0.6, 0x0000ff, 0);
+      this.scene.physics.add.existing(rb, true);
+      this.wallGroup.add(rb);
+    }
   }
 
   // Legacy: load from hardcoded grid
