@@ -42,13 +42,27 @@ const ISO = {
 //   D+S      = left      = Male_1
 //   S+A      = down      = Male_3
 //   A+W      = right     = Male_5
-/** Convert screen-space velocity to Kenney sprite direction index */
+/** Convert screen-space velocity to Kenney sprite direction index.
+ *  Uses the same mapping as keysToDir by converting velocity → iso keys. */
 function velocityToDir(vx: number, vy: number): number {
-  const angle = Math.atan2(vy, vx) * (180 / Math.PI);
-  const a = (angle + 360) % 360;
-  const sector = Math.round(a / 45) % 8;
-  const sectorToDir = [1, 2, 7, 6, 5, 4, 3, 0];
-  return sectorToDir[sector];
+  // ISO movement vectors (same as const ISO above):
+  // up:    vx=-1, vy=-0.5  → dir 6
+  // down:  vx=+1, vy=+0.5  → dir 2
+  // left:  vx=-1, vy=+0.5  → dir 4
+  // right: vx=+1, vy=-0.5  → dir 0
+  // Use dot products against each iso axis to determine dominant direction
+  const dots = {
+    up:    vx * -1 + vy * -0.5,
+    down:  vx *  1 + vy *  0.5,
+    left:  vx * -1 + vy *  0.5,
+    right: vx *  1 + vy * -0.5,
+  };
+  const threshold = 0.1;
+  const up    = dots.up    > threshold;
+  const down  = dots.down  > threshold;
+  const left  = dots.left  > threshold;
+  const right = dots.right > threshold;
+  return keysToDir(up, down, left, right);
 }
 
 function keysToDir(up: boolean, down: boolean, left: boolean, right: boolean): number {
