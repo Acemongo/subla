@@ -196,7 +196,6 @@ export class GameScene extends Phaser.Scene {
     const g = this.pathDebugGraphics;
 
     // Debug info text (fixed to camera, top-left area)
-    const tW2 = this.worldMap.renderer?.tileW ?? 256;
     const tH2 = this.worldMap.renderer?.tileH ?? 128;
     const targetScreen = this.worldMap.gridToScreen(gridPos?.col ?? 0, gridPos?.row ?? 0);
     const info = [
