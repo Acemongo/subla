@@ -10,6 +10,8 @@ export interface PlayerSaveData {
   x: number;
   y: number;
   depth: number;
+  grid_col?: number;
+  grid_row?: number;
   gear: Record<string, string | null>;
   inventory?: import('../inventory/Inventory').InventorySaveData;
   current_health?: number;

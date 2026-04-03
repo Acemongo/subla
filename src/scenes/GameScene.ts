@@ -120,12 +120,13 @@ export class GameScene extends Phaser.Scene {
     const saved = await loadPlayerState(this.userId);
     if (saved) {
       // Restore saved position if it exists
-      if (this.player && saved.x && saved.y) {
-        console.log('[GameScene] Restoring saved position:', saved.x, saved.y);
-        this.player.sprite.setPosition(saved.x, saved.y);
-        (this.player.sprite.body as Phaser.Physics.Arcade.Body).reset(saved.x, saved.y);
-        // Snap camera immediately to restored position
-        this.cameras.main.centerOn(saved.x, saved.y);
+      if (this.player && saved.grid_col != null && saved.grid_row != null) {
+        // Restore from reliable grid coordinates
+        const pos = this.worldMap.gridToScreen(saved.grid_col, saved.grid_row);
+        console.log('[GameScene] Restoring grid:', saved.grid_col, saved.grid_row, '→ screen:', pos.x, pos.y);
+        this.player.sprite.setPosition(pos.x, pos.y);
+        (this.player.sprite.body as Phaser.Physics.Arcade.Body).reset(pos.x, pos.y);
+        this.cameras.main.centerOn(pos.x, pos.y);
       }
       if (saved.current_health != null) this.currentHp   = saved.current_health;
       if (saved.current_wild   != null) this.currentWild = saved.current_wild;
@@ -218,15 +219,13 @@ export class GameScene extends Phaser.Scene {
 
   async persistPlayerState(): Promise<void> {
     if (!this.userId || !this.player) return;
-    // Save grid position for reliable restoration
     const grid = this.worldMap.screenToGrid(this.player.sprite.x, this.player.sprite.y);
-    const saveX = grid ? this.worldMap.gridToScreen(grid.col, grid.row).x : Math.round(this.player.sprite.x);
-    const saveY = grid ? this.worldMap.gridToScreen(grid.col, grid.row).y : Math.round(this.player.sprite.y);
-    console.log('[GameScene] Saving grid:', grid, '→ screen:', saveX, saveY);
     await savePlayerState({
       user_id: this.userId,
-      x: saveX,
-      y: saveY,
+      x: Math.round(this.player.sprite.x),
+      y: Math.round(this.player.sprite.y),
+      grid_col: grid?.col,
+      grid_row: grid?.row,
       depth: 0,
       gear: {},
       inventory: this.inventory.toSaveData(),
