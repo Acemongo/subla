@@ -75,13 +75,13 @@ export class WorldMap {
     for (let row = 0; row < loaded.height; row++) {
       for (let col = 0; col < loaded.width; col++) {
         const tile = loaded.grid[row][col];
-        // Block walls AND empty/void tiles (null = no tile = void)
-        if (tile !== null && !tile.solid) continue;
+        // Only block explicitly solid tiles (walls etc) — floor tiles are traversable
+        if (!tile?.solid) continue;
         const { x, y } = isoToScreen(col, row, tileW, tileH);
         const wx = x + this.offsetX;
-        // Sprite origin=(0.5,1): bottom of image at y+offsetY.
-        // Diamond top = y+offsetY-tileH, diamond center = y+offsetY-tileH*0.5
-        const wy = y + this.offsetY - tileH * 0.5;
+        // Sprite origin=(0.5,1): image bottom = y+offsetY = ground level.
+        // Place collider right at ground level (diamond base).
+        const wy = y + this.offsetY;
         const body = this.scene.add.rectangle(wx, wy, bodyW, bodyH, 0xff0000, 0);
         this.scene.physics.add.existing(body, true);
         this.wallGroup.add(body);
