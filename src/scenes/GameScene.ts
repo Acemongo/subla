@@ -5,6 +5,7 @@ import { savePlayerState, loadPlayerState, loadCharacter, getCurrentUserId } fro
 import { Inventory } from '../inventory/Inventory';
 import { Inventory as InventoryClass } from '../inventory/Inventory';
 import { InventoryUI } from '../inventory/InventoryUI';
+import { findPath } from '../world/Pathfinder';
 
 export class GameScene extends Phaser.Scene {
   private player!: Player;
@@ -67,6 +68,12 @@ export class GameScene extends Phaser.Scene {
       right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
     this.iKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
+
+    // Click/tap to navigate
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (this.inventoryUI.isVisible()) return;
+      this.handleClickNavigation(pointer);
+    });
 
     this.scene.launch('UIScene');
 
@@ -162,6 +169,38 @@ export class GameScene extends Phaser.Scene {
 
     this.player.move(up, down, left, right, delta);
     this.player.updateDepth(this.worldMap.offsetX, this.worldMap.offsetY, this.worldMap.renderer?.tileH);
+  }
+
+  private handleClickNavigation(pointer: Phaser.Input.Pointer): void {
+    // Convert screen click to world coordinates
+    const worldX = pointer.worldX;
+    const worldY = pointer.worldY;
+
+    // Convert world pos to grid cell
+    const gridPos = this.worldMap.screenToGrid(worldX, worldY);
+    if (!gridPos) return;
+
+    // Get player's current grid position
+    const playerGrid = this.worldMap.screenToGrid(
+      this.player.sprite.x,
+      this.player.sprite.y,
+    );
+    if (!playerGrid) return;
+
+    // Pathfind
+    const path = findPath(this.worldMap.walkable, playerGrid, gridPos);
+    if (!path || path.length === 0) {
+      this.player.clearPath();
+      return;
+    }
+
+    // Convert grid path to screen waypoints
+    const waypoints = path.map(p => {
+      const screen = this.worldMap.gridToScreen(p.col, p.row);
+      return { x: screen.x + (this.worldMap.renderer?.tileW ?? 256) / 2, y: screen.y };
+    });
+
+    this.player.setPath(waypoints);
   }
 
   async persistPlayerState(): Promise<void> {

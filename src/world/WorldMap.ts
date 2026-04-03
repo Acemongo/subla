@@ -13,6 +13,7 @@ export class WorldMap {
   public offsetX: number = 0;
   public offsetY: number = 0;
   public wallGroup!: Phaser.Physics.Arcade.StaticGroup;
+  public walkable: boolean[][] = [];  // [row][col] true = traversable
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -61,6 +62,14 @@ export class WorldMap {
     this.offsetY = loaded.tileH * 2;
 
     this.renderer.renderMap(loaded.grid, this.offsetX, this.offsetY);
+
+    // Build walkability grid for pathfinding
+    this.walkable = Array.from({ length: loaded.height }, (_, row) =>
+      Array.from({ length: loaded.width }, (_, col) => {
+        const tile = loaded.grid[row][col];
+        return tile !== null && !tile.solid;
+      })
+    );
 
     // Approximate isometric diamond footprint using 3 stacked rectangles.
     // Sprite origin=(0.5,1): image bottom = y+offsetY = ground level.
@@ -120,6 +129,25 @@ export class WorldMap {
       x: iso.x + this.offsetX,
       y: iso.y + this.offsetY - tileH,
     };
+  }
+
+  /** Convert screen position to grid col/row. Returns null if out of bounds. */
+  screenToGrid(sx: number, sy: number): { col: number; row: number } | null {
+    const tileW = this.renderer?.tileW ?? 256;
+    const tileH = this.renderer?.tileH ?? TILE_H;
+    // Inverse of isoToScreen + offsetY adjustment
+    // isoToScreen: x = (col-row)*(tileW/2), y = (col+row)*(tileH/2)
+    // So: col-row = (sx - offsetX) / (tileW/2)
+    //     col+row = (sy - offsetY) / (tileH/2)   [offsetY is top of diamond]
+    const adjustedX = sx - this.offsetX;
+    const adjustedY = sy - this.offsetY;
+    const colMinusRow = adjustedX / (tileW / 2);
+    const colPlusRow  = adjustedY / (tileH / 2);
+    const col = Math.floor((colMinusRow + colPlusRow) / 2);
+    const row = Math.floor((colPlusRow  - colMinusRow) / 2);
+
+    if (col < 0 || row < 0 || col >= this.mapCols || row >= this.mapRows) return null;
+    return { col, row };
   }
 
   createPlaceholderWorld(): void {

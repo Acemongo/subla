@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 
 const SPEED = 200;
+const WAYPOINT_REACH_DIST = 20; // pixels — how close counts as "arrived"
 
 // Isometric movement vectors
 // Up/W   → 315° NW → up-left on screen
@@ -41,6 +42,15 @@ const ISO = {
 //   D+S      = left      = Male_1
 //   S+A      = down      = Male_3
 //   A+W      = right     = Male_5
+/** Convert screen-space velocity to Kenney sprite direction index */
+function velocityToDir(vx: number, vy: number): number {
+  const angle = Math.atan2(vy, vx) * (180 / Math.PI);
+  const a = (angle + 360) % 360;
+  const sector = Math.round(a / 45) % 8;
+  const sectorToDir = [1, 2, 7, 6, 5, 4, 3, 0];
+  return sectorToDir[sector];
+}
+
 function keysToDir(up: boolean, down: boolean, left: boolean, right: boolean): number {
   if (up    && !down  && !left  && !right) return 6;
   if (right && !up    && !down  && !left)  return 0;
@@ -59,8 +69,12 @@ export class Player {
   public currentDir = 0;
   private runFrame = 0;
   private frameTimer = 0;
-  private readonly FRAME_RATE = 120; // ms per frame — tuned to match movement speed
+  private readonly FRAME_RATE = 120;
   private moving = false;
+
+  // Path following
+  private waypoints: { x: number; y: number }[] = [];
+  public onPathComplete?: () => void;
 
   public gear: Record<string, string | null> = {
     helmet: null, suit: null, boots: null, tool: null, weapon: null,
@@ -94,9 +108,55 @@ export class Player {
     this.sprite.setDepth(depth);
   }
 
+  /** Set a new path (screen-space waypoints). Cancels any current path. */
+  setPath(waypoints: { x: number; y: number }[]): void {
+    this.waypoints = [...waypoints];
+  }
+
+  /** Cancel current path navigation */
+  clearPath(): void {
+    this.waypoints = [];
+  }
+
+  get isFollowingPath(): boolean {
+    return this.waypoints.length > 0;
+  }
+
   move(up: boolean, down: boolean, left: boolean, right: boolean, delta: number): void {
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
+    const hasKeys = up || down || left || right;
 
+    // Keyboard input cancels path navigation
+    if (hasKeys) this.waypoints = [];
+
+    // Path following — takes over if no keyboard input
+    if (!hasKeys && this.waypoints.length > 0) {
+      const target = this.waypoints[0];
+      const dx = target.x - this.sprite.x;
+      const dy = target.y - this.sprite.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist <= WAYPOINT_REACH_DIST) {
+        this.waypoints.shift();
+        if (this.waypoints.length === 0) {
+          body.setVelocity(0, 0);
+          this.moving = false;
+          this.updateAnimation(delta);
+          this.onPathComplete?.();
+          return;
+        }
+      } else {
+        const vx = (dx / dist) * SPEED;
+        const vy = (dy / dist) * SPEED;
+        body.setVelocity(vx, vy);
+        this.moving = true;
+        this.currentDir = velocityToDir(vx, vy);
+        this.updateAnimation(delta);
+        return;
+      }
+    }
+
+    // Keyboard movement
     let vx = 0, vy = 0;
     if (up)    { vx += ISO.up.x;    vy += ISO.up.y;    }
     if (down)  { vx += ISO.down.x;  vy += ISO.down.y;  }
