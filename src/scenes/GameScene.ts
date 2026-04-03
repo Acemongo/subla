@@ -89,9 +89,6 @@ export class GameScene extends Phaser.Scene {
     this.input.keyboard!.resetKeys();
     this.time.delayedCall(100, () => this.input.keyboard?.resetKeys());
 
-    const { width } = this.cameras.main;
-
-
     this.loadSavedState();
   }
 
