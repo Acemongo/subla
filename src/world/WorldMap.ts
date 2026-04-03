@@ -62,18 +62,24 @@ export class WorldMap {
 
     this.renderer.renderMap(loaded.grid, this.offsetX, this.offsetY);
 
-    // Build wall collision bodies for solid tiles
+    // Build wall collision bodies for solid tiles.
+    // isoToScreen gives the top-center of the diamond. The IsoRenderer anchors
+    // sprites at bottom-center (origin 0.5, 1), so the diamond base sits at
+    // y + tileH. We place our collider at the diamond center = y + tileH/2,
+    // sized to approximate the diamond footprint as a rectangle.
     const tileW = loaded.tileW;
     const tileH = loaded.tileH;
+    const bodyW = tileW * 0.9;   // slightly narrower than full diamond width
+    const bodyH = tileH * 0.6;   // covers the diamond height
+
     for (let row = 0; row < loaded.height; row++) {
       for (let col = 0; col < loaded.width; col++) {
         const tile = loaded.grid[row][col];
         if (!tile?.solid) continue;
         const { x, y } = isoToScreen(col, row, tileW, tileH);
         const wx = x + this.offsetX;
-        const wy = y + this.offsetY;
-        // Invisible rectangle collider at the base of the tile
-        const body = this.scene.add.rectangle(wx, wy, tileW * 0.8, tileH * 0.5, 0xff0000, 0);
+        const wy = y + this.offsetY + tileH * 0.5; // diamond center
+        const body = this.scene.add.rectangle(wx, wy, bodyW, bodyH, 0xff0000, 0);
         this.scene.physics.add.existing(body, true);
         this.wallGroup.add(body);
       }

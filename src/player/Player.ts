@@ -75,10 +75,12 @@ export class Player {
     this.sprite.setScale(0.55);       // match dungeon tile scale
     this.sprite.setCollideWorldBounds(true);
 
-    // Small physics body centered at feet
+    // Physics body at feet — sized to match the iso tile footprint
+    // Sprite is 256x512 at scale 0.55. Origin (0.5, 0.85) means feet are near bottom.
+    // Body is in unscaled sprite coords: center horizontally, place near feet.
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
-    body.setSize(60, 40);
-    body.setOffset(98, 420);
+    body.setSize(100, 60);   // wide enough to feel solid, thin vertical for iso
+    body.setOffset(78, 410); // center x=(256-100)/2=78, y near feet
   }
 
   addWallCollider(wallGroup: Phaser.Physics.Arcade.StaticGroup): void {
