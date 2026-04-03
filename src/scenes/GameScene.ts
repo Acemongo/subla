@@ -39,10 +39,8 @@ export class GameScene extends Phaser.Scene {
     this.worldMap = new WorldMap(this);
     this.worldMap.createFromTiledJSON('level1');
 
-    const spawnCenter = this.worldMap.gridToScreen(
-      Math.floor(this.worldMap.mapCols / 2),
-      Math.floor(this.worldMap.mapRows / 2)
-    );
+    // Spawn at center open floor area (col=8, row=6 confirmed walkable)
+    const spawnCenter = this.worldMap.gridToScreen(8, 6);
 
     this.player = new Player(this, spawnCenter.x, spawnCenter.y);
     this.player.addWallCollider(this.worldMap.wallGroup);
