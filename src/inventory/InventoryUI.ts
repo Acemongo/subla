@@ -1,6 +1,6 @@
 import type { Inventory } from './Inventory';
 import type { GearSlot, GearItem } from './Item';
-import { qualityLabel } from './Item';
+import { qualityLabel, MAX_CARRY_WEIGHT } from './Item';
 
 const SLOTS: GearSlot[] = ['helmet', 'suit', 'boots', 'tool', 'weapon'];
 const SLOT_LABELS: Record<GearSlot, string> = {
@@ -77,7 +77,7 @@ export class InventoryUI {
 
     // Header
     const header = document.createElement('div');
-    header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;';
+    header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;';
     header.innerHTML = `<span style="color:#c0a0ff; font-size:16px; font-weight:bold;">🎒 Inventory</span>`;
     const closeBtn = document.createElement('button');
     closeBtn.textContent = '✕';
@@ -88,6 +88,24 @@ export class InventoryUI {
     closeBtn.addEventListener('click', () => this.hide());
     header.appendChild(closeBtn);
     panel.appendChild(header);
+
+    // Carry weight bar
+    const w = this.inventory.totalWeight();
+    const mw = MAX_CARRY_WEIGHT;
+    const wPct = Math.min(1, w / mw);
+    const wColor = wPct >= 1 ? '#e03030' : wPct >= 0.8 ? '#e08030' : '#60a060';
+    const weightDiv = document.createElement('div');
+    weightDiv.style.cssText = 'margin-bottom:14px;';
+    weightDiv.innerHTML = `
+      <div style="display:flex; justify-content:space-between; color:${wColor}; font-size:11px; margin-bottom:3px;">
+        <span>⚖ Carry Weight</span>
+        <span>${w} / ${mw}</span>
+      </div>
+      <div style="height:4px; background:#1a0a3e; border-radius:2px; overflow:hidden;">
+        <div style="height:100%; width:${Math.round(wPct*100)}%; background:${wColor}; border-radius:2px;"></div>
+      </div>
+    `;
+    panel.appendChild(weightDiv);
 
     // ---- Equipped gear ----
     panel.appendChild(this.sectionLabel('Equipped'));
@@ -140,9 +158,10 @@ export class InventoryUI {
       panel.appendChild(ammoEl);
     }
 
-    // Close on backdrop click
-    panel.addEventListener('click', (e) => e.stopPropagation());
-    document.addEventListener('click', this.onBackdropClick);
+    // Stop clicks inside panel from bubbling to backdrop
+    panel.addEventListener('mousedown', (e) => e.stopPropagation());
+    panel.addEventListener('mouseup',   (e) => e.stopPropagation());
+    panel.addEventListener('click',     (e) => e.stopPropagation());
 
     document.body.appendChild(panel);
     this.panel = panel;

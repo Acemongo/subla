@@ -40,7 +40,7 @@ export class UIScene extends Phaser.Scene {
 
     invBtn.on('pointerover', () => invBtn.setColor('#ffffff'));
     invBtn.on('pointerout',  () => invBtn.setColor('#ffe0a0'));
-    invBtn.on('pointerdown', () => {
+    invBtn.on('pointerup', () => {
       const game = this.scene.get('GameScene') as any;
       game?.inventoryUI?.toggle();
     });

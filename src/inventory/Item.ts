@@ -23,6 +23,7 @@ export interface GearItem {
   durabilityMax: number;        // uses before quality hits 0
   ammoType?:     string;        // if weapon, which ammo consumable it uses
   emoji:         string;
+  weight:        number;        // carry weight units
 }
 
 /** A consumable stack (med kits, food, ammo, repair kits) */
@@ -44,41 +45,58 @@ export interface Consumable {
 // Starting gear catalog
 // ---------------------------------------------------------------------------
 
+export const MAX_CARRY_WEIGHT = 20;
+
 export const GEAR_CATALOG: Record<string, GearItem> = {
   hardhat: {
     id: 'hardhat', name: 'Hard Hat', slot: 'helmet', tier: 1,
     stats: { defense: 1 }, description: 'Standard construction helmet.',
-    quality: 1.0, durabilityMax: 100, emoji: '⛑️',
+    quality: 1.0, durabilityMax: 100, emoji: '⛑️', weight: 1,
   },
   caving_suit: {
     id: 'caving_suit', name: 'Caving Suit', slot: 'suit', tier: 1,
     stats: { defense: 2 }, description: 'Padded suit for tight tunnels.',
-    quality: 1.0, durabilityMax: 80, emoji: '🦺',
+    quality: 1.0, durabilityMax: 80, emoji: '🦺', weight: 3,
   },
   trail_boots: {
     id: 'trail_boots', name: 'Trail Boots', slot: 'boots', tier: 1,
     stats: { speed: 1 }, description: 'Good grip on loose rock.',
-    quality: 1.0, durabilityMax: 120, emoji: '🥾',
+    quality: 1.0, durabilityMax: 120, emoji: '🥾', weight: 1,
   },
   headlamp: {
     id: 'headlamp', name: 'LED Headlamp', slot: 'tool', tier: 1,
     stats: { visionRange: 2 }, description: 'Extends visibility in deep tunnels.',
-    quality: 1.0, durabilityMax: 200, emoji: '🔦',
+    quality: 1.0, durabilityMax: 200, emoji: '🔦', weight: 1,
   },
   climbing_axe: {
     id: 'climbing_axe', name: 'Climbing Axe', slot: 'weapon', tier: 1,
     stats: { attack: 3 }, description: 'Doubles as a weapon when things get weird.',
-    quality: 1.0, durabilityMax: 60, emoji: '⛏️',
+    quality: 1.0, durabilityMax: 60, emoji: '⛏️', weight: 2,
   },
   pistol: {
     id: 'pistol', name: 'Pistol', slot: 'weapon', tier: 2,
     stats: { attack: 5 }, description: '9mm semi-auto. Needs ammo.',
-    quality: 1.0, durabilityMax: 200, ammoType: 'ammo_9mm', emoji: '🔫',
+    quality: 1.0, durabilityMax: 200, ammoType: 'ammo_9mm', emoji: '🔫', weight: 1,
   },
   shotgun: {
     id: 'shotgun', name: 'Sawed-Off Shotgun', slot: 'weapon', tier: 2,
     stats: { attack: 20 }, description: 'Devastating at close range. Needs shells.',
-    quality: 1.0, durabilityMax: 80, ammoType: 'ammo_shells', emoji: '💥',
+    quality: 1.0, durabilityMax: 80, ammoType: 'ammo_shells', emoji: '💥', weight: 3,
+  },
+  hazmat_helmet: {
+    id: 'hazmat_helmet', name: 'Hazmat Helmet', slot: 'helmet', tier: 2,
+    stats: { defense: 3 }, description: 'Full face protection. Found deeper down.',
+    quality: 0.75, durabilityMax: 80, emoji: '🪖', weight: 2,
+  },
+  kevlar_vest: {
+    id: 'kevlar_vest', name: 'Kevlar Vest', slot: 'suit', tier: 2,
+    stats: { defense: 5 }, description: 'Stops bullets. Heavy.',
+    quality: 0.6, durabilityMax: 60, emoji: '🛡️', weight: 5,
+  },
+  multitool: {
+    id: 'multitool', name: 'Multitool w/ Knife', slot: 'tool', tier: 1,
+    stats: { attack: 1, visionRange: 1 }, description: 'Useful for everything.',
+    quality: 1.0, durabilityMax: 150, emoji: '🔪', weight: 1,
   },
 };
 

@@ -1,5 +1,5 @@
 import type { GearItem, GearSlot, Consumable } from './Item';
-import { GEAR_CATALOG, CONSUMABLE_CATALOG } from './Item';
+import { GEAR_CATALOG, CONSUMABLE_CATALOG, MAX_CARRY_WEIGHT } from './Item';
 
 // ---------------------------------------------------------------------------
 // Inventory state
@@ -76,12 +76,33 @@ export class Inventory {
       consumables.push({ ...CONSUMABLE_CATALOG.ammo_shells, quantity: 10 });
     }
 
-    return { equipped, bag: [], consumables };
+    // Extra bag items — not equipped, but carried
+    const bag: GearItem[] = [
+      { ...GEAR_CATALOG.multitool },
+      { ...GEAR_CATALOG.hazmat_helmet },
+    ];
+
+    return { equipped, bag, consumables };
   }
 
   // ---------------------------------------------------------------------------
   // Equip / unequip
   // ---------------------------------------------------------------------------
+
+  /** Total weight of all carried items (equipped + bag) */
+  totalWeight(): number {
+    const equippedW = Object.values(this.equipped).reduce((s, i) => s + (i?.weight ?? 0), 0);
+    const bagW = this.bag.reduce((s, i) => s + i.weight, 0);
+    return equippedW + bagW;
+  }
+
+  maxWeight(): number { return MAX_CARRY_WEIGHT; }
+
+  canCarry(item: GearItem): boolean {
+    // Equipped items always fit (swapping slot doesn't add weight)
+    if (this.equipped[item.slot]) return true;
+    return this.totalWeight() + item.weight <= MAX_CARRY_WEIGHT;
+  }
 
   equip(item: GearItem): void {
     const current = this.equipped[item.slot];
