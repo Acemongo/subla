@@ -263,13 +263,7 @@ export class GameScene extends Phaser.Scene {
     // Set path using tile centers as waypoints
     this.player.setPath(waypoints);
 
-    // Auto-clear debug after 8s
-    this.time.delayedCall(8000, () => {
-      this.pathDebugGraphics?.destroy();
-      this.pathDebugText?.destroy();
-      this.pathDebugGraphics = undefined;
-      this.pathDebugText = undefined;
-    });
+    // Debug persists until next click
   }
 
   async persistPlayerState(): Promise<void> {
