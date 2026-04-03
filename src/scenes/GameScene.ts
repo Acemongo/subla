@@ -203,7 +203,7 @@ export class GameScene extends Phaser.Scene {
       `Click world: (${Math.round(worldX)}, ${Math.round(worldY)})`,
       `Click → grid: col=${gridPos?.col ?? '?'} row=${gridPos?.row ?? '?'}`,
       `Grid → screen: (${Math.round(targetScreen.x)}, ${Math.round(targetScreen.y)})`,
-      `Target center: (${Math.round(targetScreen.x + tW2/2)}, ${Math.round(targetScreen.y + tH2/2)})`,
+      `Target center: (${Math.round(targetScreen.x)}, ${Math.round(targetScreen.y + tH2/2)})`,
       `Player world: (${Math.round(this.player.sprite.x)}, ${Math.round(this.player.sprite.y)})`,
       `Player → grid: col=${playerGrid?.col ?? '?'} row=${playerGrid?.row ?? '?'}`,
     ].join('\n');
@@ -217,25 +217,24 @@ export class GameScene extends Phaser.Scene {
     g.fillCircle(worldX, worldY, 8);
 
     // Draw target tile diamond outline (yellow)
-    // gridToScreen returns top-left corner of the diamond bounding box
+    // gridToScreen: x = diamond CENTER-x (origin 0.5), y = diamond TOP-y
     const target = this.worldMap.gridToScreen(gridPos.col, gridPos.row);
     const tW = this.worldMap.renderer?.tileW ?? 256;
     const tH = this.worldMap.renderer?.tileH ?? 128;
-    // Diamond vertices: top, right, bottom, left
     g.lineStyle(3, 0xffff00, 1);
     g.beginPath();
-    g.moveTo(target.x + tW / 2, target.y);           // top
-    g.lineTo(target.x + tW,     target.y + tH / 2);  // right
-    g.lineTo(target.x + tW / 2, target.y + tH);      // bottom
-    g.lineTo(target.x,          target.y + tH / 2);  // left
+    g.moveTo(target.x,          target.y);           // top (center-x, top-y)
+    g.lineTo(target.x + tW / 2, target.y + tH / 2); // right
+    g.lineTo(target.x,          target.y + tH);      // bottom
+    g.lineTo(target.x - tW / 2, target.y + tH / 2); // left
     g.closePath();
     g.strokePath();
 
     if (!path || path.length === 0) {
       // No path — draw red X on target
       g.lineStyle(3, 0xff0000, 1);
-      g.lineBetween(target.x, target.y, target.x + tW, target.y + tH);
-      g.lineBetween(target.x + tW, target.y, target.x, target.y + tH);
+      g.lineBetween(target.x - tW/2, target.y, target.x + tW/2, target.y + tH);
+      g.lineBetween(target.x + tW/2, target.y, target.x - tW/2, target.y + tH);
       this.player.clearPath();
       return;
     }
@@ -244,8 +243,8 @@ export class GameScene extends Phaser.Scene {
     g.lineStyle(2, 0x00ffff, 0.8);
     const waypoints = path.map(p => {
       const s = this.worldMap.gridToScreen(p.col, p.row);
-      // Center of tile diamond (gridToScreen = top-left of bounding box)
-      return { x: s.x + tW / 2, y: s.y + tH / 2 };
+      // gridToScreen: x = center-x, y = top. Waypoint = diamond center.
+      return { x: s.x, y: s.y + tH / 2 };
     });
 
     // Line from player to first waypoint
