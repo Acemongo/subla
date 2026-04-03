@@ -124,13 +124,8 @@ export class GameScene extends Phaser.Scene {
         console.log('[GameScene] Restoring saved position:', saved.x, saved.y);
         this.player.sprite.setPosition(saved.x, saved.y);
         (this.player.sprite.body as Phaser.Physics.Arcade.Body).reset(saved.x, saved.y);
-        // Verify after 100ms that position held
-        this.time.delayedCall(100, () => {
-          console.log('[GameScene] Position after 100ms:', this.player.sprite.x, this.player.sprite.y);
-        });
-        this.time.delayedCall(500, () => {
-          console.log('[GameScene] Position after 500ms:', this.player.sprite.x, this.player.sprite.y);
-        });
+        // Snap camera immediately to restored position
+        this.cameras.main.centerOn(saved.x, saved.y);
       }
       if (saved.current_health != null) this.currentHp   = saved.current_health;
       if (saved.current_wild   != null) this.currentWild = saved.current_wild;
