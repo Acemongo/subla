@@ -41,7 +41,6 @@ export class GameScene extends Phaser.Scene {
 
     // Spawn at center open floor area (col=8, row=6 confirmed walkable)
     const spawnCenter = this.worldMap.gridToScreen(8, 6);
-    console.log('[GameScene] Spawn position:', spawnCenter.x, spawnCenter.y);
 
     this.player = new Player(this, spawnCenter.x, spawnCenter.y);
     this.player.addWallCollider(this.worldMap.wallGroup);
@@ -219,18 +218,15 @@ export class GameScene extends Phaser.Scene {
 
   async persistPlayerState(): Promise<void> {
     if (!this.userId || !this.player) return;
+    // Save grid position for reliable restoration
     const grid = this.worldMap.screenToGrid(this.player.sprite.x, this.player.sprite.y);
-    const msg = `Saving: x=${Math.round(this.player.sprite.x)} y=${Math.round(this.player.sprite.y)} grid=${JSON.stringify(grid)}`;
-    console.log('[GameScene]', msg);
-    // Show on screen so it's readable before page reloads
-    const div = document.createElement('div');
-    div.style.cssText = 'position:fixed;bottom:60px;left:16px;background:#000a;color:#0f0;font:12px monospace;padding:6px;z-index:9999;white-space:pre';
-    div.textContent = msg;
-    document.body.appendChild(div);
+    const saveX = grid ? this.worldMap.gridToScreen(grid.col, grid.row).x : Math.round(this.player.sprite.x);
+    const saveY = grid ? this.worldMap.gridToScreen(grid.col, grid.row).y : Math.round(this.player.sprite.y);
+    console.log('[GameScene] Saving grid:', grid, '→ screen:', saveX, saveY);
     await savePlayerState({
       user_id: this.userId,
-      x: Math.round(this.player.sprite.x),
-      y: Math.round(this.player.sprite.y),
+      x: saveX,
+      y: saveY,
       depth: 0,
       gear: {},
       inventory: this.inventory.toSaveData(),
