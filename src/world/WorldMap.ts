@@ -79,9 +79,9 @@ export class WorldMap {
         if (tile !== null && !tile.solid) continue;
         const { x, y } = isoToScreen(col, row, tileW, tileH);
         const wx = x + this.offsetX;
-        // Diamond base is at bottom of image (origin 1) = y + offsetY
-        // Center the body on the diamond: shift up by half the diamond height
-        const wy = y + this.offsetY - tileH * 0.25;
+        // Sprite origin=(0.5,1): bottom of image at y+offsetY.
+        // Diamond top = y+offsetY-tileH, diamond center = y+offsetY-tileH*0.5
+        const wy = y + this.offsetY - tileH * 0.5;
         const body = this.scene.add.rectangle(wx, wy, bodyW, bodyH, 0xff0000, 0);
         this.scene.physics.add.existing(body, true);
         this.wallGroup.add(body);
