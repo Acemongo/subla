@@ -121,7 +121,9 @@ export class GameScene extends Phaser.Scene {
     if (saved) {
       // Restore saved position if it exists
       if (this.player && saved.x && saved.y) {
+        console.log('[GameScene] Restoring saved position:', saved.x, saved.y);
         this.player.sprite.setPosition(saved.x, saved.y);
+        (this.player.sprite.body as Phaser.Physics.Arcade.Body).reset(saved.x, saved.y);
       }
       if (saved.current_health != null) this.currentHp   = saved.current_health;
       if (saved.current_wild   != null) this.currentWild = saved.current_wild;
@@ -214,6 +216,7 @@ export class GameScene extends Phaser.Scene {
 
   async persistPlayerState(): Promise<void> {
     if (!this.userId || !this.player) return;
+    console.log('[GameScene] Saving position:', this.player.sprite.x, this.player.sprite.y);
     await savePlayerState({
       user_id: this.userId,
       x: Math.round(this.player.sprite.x),
