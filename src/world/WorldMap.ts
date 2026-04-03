@@ -139,11 +139,12 @@ export class WorldMap {
     // isoToScreen: x = (col-row)*(tileW/2), y = (col+row)*(tileH/2)
     // So: col-row = (sx - offsetX) / (tileW/2)
     //     col+row = (sy - offsetY) / (tileH/2)   [offsetY is top of diamond]
-    const adjustedX = sx - this.offsetX;
-    // gridToScreen: y = iso.y + offsetY - tileH
-    // The clickable center of a tile is at gridToScreen.y + tileH (bottom of diamond)
-    // So inverse: iso.y = sy - offsetY + tileH
-    const adjustedY = sy - this.offsetY + tileH;
+    // gridToScreen: x = iso.x + offsetX,  y = iso.y + offsetY - tileH
+    // isoToScreen:  x = (col-row)*(tileW/2),  y = (col+row)*(tileH/2)
+    // Measured correction from debug: diamond is +192px right, -69px high vs click
+    // Adjust input coords to compensate before inverse transform
+    const adjustedX = sx - this.offsetX - tileW / 2;
+    const adjustedY = sy - this.offsetY + tileH * 1.5;
     const colMinusRow = adjustedX / (tileW / 2);
     const colPlusRow  = adjustedY / (tileH / 2);
     const col = Math.floor((colMinusRow + colPlusRow) / 2);
