@@ -123,7 +123,7 @@ export class GameScene extends Phaser.Scene {
       if (this.player && saved.grid_col != null && saved.grid_row != null) {
         // Restore from reliable grid coordinates
         const pos = this.worldMap.gridToScreen(saved.grid_col, saved.grid_row);
-        console.log('[GameScene] Restoring grid:', saved.grid_col, saved.grid_row, '→ screen:', pos.x, pos.y);
+
         this.player.sprite.setPosition(pos.x, pos.y);
         (this.player.sprite.body as Phaser.Physics.Arcade.Body).reset(pos.x, pos.y);
         this.cameras.main.centerOn(pos.x, pos.y);
@@ -220,7 +220,7 @@ export class GameScene extends Phaser.Scene {
   async persistPlayerState(): Promise<void> {
     if (!this.userId || !this.player) return;
     const grid = this.worldMap.screenToGrid(this.player.sprite.x, this.player.sprite.y);
-    console.log('[GameScene] Saving grid:', grid, 'sprite pos:', Math.round(this.player.sprite.x), Math.round(this.player.sprite.y));
+
     await savePlayerState({
       user_id: this.userId,
       x: Math.round(this.player.sprite.x),
