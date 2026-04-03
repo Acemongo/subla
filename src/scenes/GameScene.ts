@@ -206,6 +206,8 @@ export class GameScene extends Phaser.Scene {
       `Target center: (${Math.round(targetScreen.x)}, ${Math.round(targetScreen.y + tH2/2)})`,
       `Player world: (${Math.round(this.player.sprite.x)}, ${Math.round(this.player.sprite.y)})`,
       `Player → grid: col=${playerGrid?.col ?? '?'} row=${playerGrid?.row ?? '?'}`,
+      `offsetX=${Math.round(this.worldMap.offsetX)} offsetY=${Math.round(this.worldMap.offsetY)}`,
+      `tileW=${this.worldMap.renderer?.tileW} tileH=${this.worldMap.renderer?.tileH}`,
     ].join('\n');
     this.pathDebugText = this.add.text(16, 80, info, {
       fontSize: '12px', color: '#ffffff',
