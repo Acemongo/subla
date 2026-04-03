@@ -11,6 +11,9 @@ export interface PlayerSaveData {
   y: number;
   depth: number;
   gear: Record<string, string | null>;
+  inventory?: import('../inventory/Inventory').InventorySaveData;
+  current_health?: number;
+  current_wild?: number;
   updated_at?: string;
 }
 
