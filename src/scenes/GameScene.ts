@@ -172,6 +172,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private pathDebugGraphics?: Phaser.GameObjects.Graphics;
+  private pathDebugText?: Phaser.GameObjects.Text;
 
   private handleClickNavigation(pointer: Phaser.Input.Pointer): void {
     const worldX = pointer.worldX;
@@ -190,8 +191,30 @@ export class GameScene extends Phaser.Scene {
 
     // Clear previous debug drawing
     this.pathDebugGraphics?.destroy();
+    this.pathDebugText?.destroy();
     this.pathDebugGraphics = this.add.graphics().setDepth(500);
     const g = this.pathDebugGraphics;
+
+    // Debug info text (fixed to camera, top-left area)
+    const tW2 = this.worldMap.renderer?.tileW ?? 256;
+    const tH2 = this.worldMap.renderer?.tileH ?? 128;
+    const targetScreen = this.worldMap.gridToScreen(gridPos?.col ?? 0, gridPos?.row ?? 0);
+    const info = [
+      `Click world: (${Math.round(worldX)}, ${Math.round(worldY)})`,
+      `Click → grid: col=${gridPos?.col ?? '?'} row=${gridPos?.row ?? '?'}`,
+      `Grid → screen: (${Math.round(targetScreen.x)}, ${Math.round(targetScreen.y)})`,
+      `Target center: (${Math.round(targetScreen.x + tW2/2)}, ${Math.round(targetScreen.y + tH2/2)})`,
+      `Player world: (${Math.round(this.player.sprite.x)}, ${Math.round(this.player.sprite.y)})`,
+      `Player → grid: col=${playerGrid?.col ?? '?'} row=${playerGrid?.row ?? '?'}`,
+    ].join('\n');
+    this.pathDebugText = this.add.text(16, 80, info, {
+      fontSize: '12px', color: '#ffffff',
+      backgroundColor: '#000000aa', padding: { x: 6, y: 4 },
+    }).setScrollFactor(0).setDepth(1001);
+
+    // Also draw a small red dot exactly at the raw click position
+    g.fillStyle(0xff0000, 1);
+    g.fillCircle(worldX, worldY, 8);
 
     // Draw target tile diamond outline (yellow)
     // gridToScreen returns top-left corner of the diamond bounding box
@@ -240,10 +263,12 @@ export class GameScene extends Phaser.Scene {
     // Set path using tile centers as waypoints
     this.player.setPath(waypoints);
 
-    // Auto-clear debug after 5s
-    this.time.delayedCall(5000, () => {
+    // Auto-clear debug after 8s
+    this.time.delayedCall(8000, () => {
       this.pathDebugGraphics?.destroy();
+      this.pathDebugText?.destroy();
       this.pathDebugGraphics = undefined;
+      this.pathDebugText = undefined;
     });
   }
 
