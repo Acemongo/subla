@@ -46,7 +46,9 @@ export class IsoRenderer {
         const { x, y } = isoToScreen(col, row, this.tileW, this.tileH);
         const img = this.scene.add.image(x + offsetX, y + offsetY, tile.key);
         img.setOrigin(0.5, 1); // anchor bottom-center
-        img.setDepth(row + col);
+        // Depth: iso painter's order — higher row+col = drawn later (on top)
+        // Multiply row to ensure strict ordering across diagonals
+        img.setDepth((row + col) * 100 + col);
         this.sprites.push(img);
       }
     }

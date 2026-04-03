@@ -118,8 +118,10 @@ export class Player {
   updateDepth(_offsetX: number, offsetY: number, tileH = 256): void {
     const halfH = tileH / 2;
     const feetY = this.sprite.y;
-    const depth = (feetY - offsetY + tileH) / halfH + 0.5;
-    this.sprite.setDepth(depth);
+    // Scale to match tile depth range: tiles use (row+col)*100+col
+    // feetY maps to ~row+col, so multiply by 100 and add 50 to sit above tiles
+    const isoSum = (feetY - offsetY + tileH) / halfH;
+    this.sprite.setDepth(isoSum * 100 + 50);
   }
 
   /** Set a new path (screen-space waypoints). Cancels any current path. */
