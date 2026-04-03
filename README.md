@@ -37,7 +37,10 @@ public/assets/  — Tilemaps, tilesets, sprites (add here)
 - ✅ Supabase auth (email/password, sign in/out, session persistence)
 - ✅ Auto-save player position + gear every 10s
 - ✅ Load saved state on login
-- ✅ HUD with depth indicator, gear slot, sign out button
+- ✅ HUD: HP/WILD bars, Save button, Sign Out button
+- ✅ Click-to-navigate with A* pathfinding (double-click)
+- ✅ Position save/restore via grid col/row
+- ✅ Wall collision with 3-slice diamond approximation
 
 ## Next Steps
 - [ ] Implement gear selection/upgrade UI
