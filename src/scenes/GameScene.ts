@@ -194,15 +194,17 @@ export class GameScene extends Phaser.Scene {
     const g = this.pathDebugGraphics;
 
     // Draw target tile diamond outline (yellow)
+    // gridToScreen returns top-left corner of the diamond bounding box
     const target = this.worldMap.gridToScreen(gridPos.col, gridPos.row);
     const tW = this.worldMap.renderer?.tileW ?? 256;
     const tH = this.worldMap.renderer?.tileH ?? 128;
+    // Diamond vertices: top, right, bottom, left
     g.lineStyle(3, 0xffff00, 1);
     g.beginPath();
-    g.moveTo(target.x + tW / 2, target.y);          // right
-    g.lineTo(target.x + tW,     target.y + tH / 2); // bottom
-    g.lineTo(target.x + tW / 2, target.y + tH);     // left
-    g.lineTo(target.x,          target.y + tH / 2); // top
+    g.moveTo(target.x + tW / 2, target.y);           // top
+    g.lineTo(target.x + tW,     target.y + tH / 2);  // right
+    g.lineTo(target.x + tW / 2, target.y + tH);      // bottom
+    g.lineTo(target.x,          target.y + tH / 2);  // left
     g.closePath();
     g.strokePath();
 
@@ -219,7 +221,7 @@ export class GameScene extends Phaser.Scene {
     g.lineStyle(2, 0x00ffff, 0.8);
     const waypoints = path.map(p => {
       const s = this.worldMap.gridToScreen(p.col, p.row);
-      // Center of tile diamond
+      // Center of tile diamond (gridToScreen = top-left of bounding box)
       return { x: s.x + tW / 2, y: s.y + tH / 2 };
     });
 
