@@ -45,7 +45,7 @@ export class GameScene extends Phaser.Scene {
   private rangedCooldown = 0;
   private readonly MELEE_COOLDOWN  = 800;
   private readonly RANGED_COOLDOWN = 1200;
-  private readonly MELEE_RANGE_PX  = 160; // ~1 adjacent tile
+  private readonly MELEE_RANGE_PX  = 220; // ~1 tile + buffer (iso adjacent = ~181px)
 
   constructor() {
     super({ key: 'GameScene' });
