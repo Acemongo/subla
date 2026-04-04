@@ -229,16 +229,29 @@ export class GameScene extends Phaser.Scene {
 
   private doMeleeAttack(): void {
     const weapon = this.inventory.equipped.weapon;
-    const dmg = weapon ? (weapon.stats.attack ?? 2) : 2; // fists = 2 dmg
+    const dmg = weapon ? (weapon.stats.attack ?? 2) : 2;
+
+    // Melee requires same grid cell
+    const playerGrid = this.worldMap.screenToGrid(this.player.sprite.x, this.player.sprite.y);
     const enemy = this.enemyManager.getEnemyInRange(
       this.player.sprite.x, this.player.sprite.y, this.MELEE_RANGE_PX
     );
-    if (enemy) {
-      enemy.takeDamage(dmg);
-      if (weapon) this.inventory.degradeWeapon();
-      this.showFloatingText(`-${dmg}`, enemy.sprite.x, enemy.sprite.y - 80, '#ff4444');
+
+    if (enemy && playerGrid) {
+      const enemyGrid = this.worldMap.screenToGrid(enemy.sprite.x, enemy.sprite.y);
+      const sameCell = enemyGrid &&
+        Math.abs(enemyGrid.col - playerGrid.col) <= 1 &&
+        Math.abs(enemyGrid.row - playerGrid.row) <= 1;
+
+      if (sameCell) {
+        enemy.takeDamage(dmg);
+        if (weapon) this.inventory.degradeWeapon();
+        this.showFloatingText(`-${dmg}`, enemy.sprite.x, enemy.sprite.y - 80, '#ff4444');
+      } else {
+        this.showFloatingText('Too far!', this.player.sprite.x, this.player.sprite.y - 80, '#888888');
+      }
     } else {
-      this.showFloatingText('Miss!', this.player.sprite.x, this.player.sprite.y - 80, '#888888');
+      this.showFloatingText('No target!', this.player.sprite.x, this.player.sprite.y - 80, '#888888');
     }
     this.meleeCooldown = this.MELEE_COOLDOWN;
   }
@@ -264,6 +277,8 @@ export class GameScene extends Phaser.Scene {
     if (enemy) {
       this.inventory.consumeAmmo();
       this.inventory.degradeWeapon();
+      // Snap player to face the enemy and lock for 1 heartbeat (1s)
+      this.player.shootToward(enemy.sprite.x, enemy.sprite.y, 1000);
       this.fireProjectile(
         this.player.sprite.x, this.player.sprite.y,
         enemy.sprite.x, enemy.sprite.y,

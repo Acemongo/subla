@@ -253,6 +253,24 @@ export class Enemy {
   // Damage & death
   // ---------------------------------------------------------------------------
 
+  /** Freeze enemy for ms duration, facing a specific direction */
+  stunToward(targetX: number, targetY: number, durationMs: number): void {
+    // Snap to face the direction from enemy toward player
+    const dx = targetX - this.sprite.x;
+    const dy = targetY - this.sprite.y;
+    this.currentDir = this.velocityToDir(dx, dy);
+    this.sprite.setTexture(`${this.def.spriteKey}_idle_${this.currentDir}`);
+
+    // Temporarily freeze movement
+    const prevState = this.state;
+    this.state = 'idle';
+    (this.sprite.body as Phaser.Physics.Arcade.Body).setVelocity(0, 0);
+
+    this.scene.time.delayedCall(durationMs, () => {
+      if (this.hp > 0) this.state = prevState;
+    });
+  }
+
   takeDamage(amount: number): void {
     this.hp = Math.max(0, this.hp - amount);
     // Flash white briefly

@@ -124,6 +124,27 @@ export class Player {
     this.sprite.setDepth(isoSum * 100 + 50);
   }
 
+  // Firing lock — player can't move while shooting
+  private firingLock = false;
+
+  /** Snap player to face target and lock movement for durationMs (firing animation) */
+  shootToward(targetX: number, targetY: number, durationMs: number): void {
+    const dx = targetX - this.sprite.x;
+    const dy = targetY - this.sprite.y;
+    this.currentDir = velocityToDir(dx, dy);
+    this.sprite.setTexture(`char_idle_${this.currentDir}`);
+    this.waypoints = [];
+    this.firingLock = true;
+    (this.sprite.body as Phaser.Physics.Arcade.Body).setVelocity(0, 0);
+
+    // Unlock after duration
+    this.scene.time.delayedCall(durationMs, () => {
+      this.firingLock = false;
+    });
+  }
+
+  get isFiring(): boolean { return this.firingLock; }
+
   /** Set a new path (screen-space waypoints). Cancels any current path. */
   setPath(waypoints: { x: number; y: number }[]): void {
     this.waypoints = [...waypoints];
@@ -141,6 +162,14 @@ export class Player {
   move(up: boolean, down: boolean, left: boolean, right: boolean, delta: number): void {
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
     const hasKeys = up || down || left || right;
+
+    // Block all input while firing
+    if (this.firingLock) {
+      (this.sprite.body as Phaser.Physics.Arcade.Body).setVelocity(0, 0);
+      this.moving = false;
+      this.updateAnimation(delta);
+      return;
+    }
 
     // Keyboard input cancels path navigation
     if (hasKeys) this.waypoints = [];
