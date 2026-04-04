@@ -25,10 +25,10 @@ export class Enemy {
   private hpBarFill: Phaser.GameObjects.Rectangle;
 
   // Current dir for animation
-  private runFrame  = 0;
+  private runFrame   = 0;
   private frameTimer = 0;
-  private readonly FRAME_RATE = 120;
-  private currentDir = 3; // S-facing by default
+  private readonly FRAME_RATE = 300; // slower — 2-frame cycle feels better at ~300ms/frame
+  private currentDir = 3;
 
   constructor(
     scene: Phaser.Scene,
@@ -76,8 +76,11 @@ export class Enemy {
     const tileDist = dist / ((this.worldMap.renderer?.tileW ?? 256) * 0.5);
 
     // State transitions
+    const body = this.sprite.body as Phaser.Physics.Arcade.Body;
+
     switch (this.state) {
       case 'idle':
+        body.setVelocity(0, 0);
         if (tileDist <= this.def.detectionRadius) {
           this.state = 'aware';
         }
@@ -97,6 +100,7 @@ export class Enemy {
         }
         break;
       case 'attack':
+        body.setVelocity(0, 0);
         if (tileDist > this.def.attackRange * 1.5) {
           this.state = this.def.canMove ? 'pursue' : 'idle';
         } else {
@@ -176,8 +180,8 @@ export class Enemy {
 
   private updateAnimation(delta: number): void {
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
-    const moving = this.state === 'pursue' &&
-      (Math.abs(body.velocity.x) > 5 || Math.abs(body.velocity.y) > 5);
+    const speed = Math.sqrt(body.velocity.x**2 + body.velocity.y**2);
+    const moving = this.state === 'pursue' && speed > 20;
 
     if (!moving) {
       this.sprite.setTexture(`${this.def.spriteKey}_idle_${this.currentDir}`);
