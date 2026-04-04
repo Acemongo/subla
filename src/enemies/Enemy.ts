@@ -44,11 +44,11 @@ export class Enemy {
     this.hp       = def.hp;
     this.maxHp    = def.hp;
 
-    // Sprite — use Male_3 (south-facing idle) tinted to enemy color
-    this.sprite = scene.physics.add.image(x, y, `char_idle_3`);
+    // Sprite — use enemy-specific sprite key
+    this.sprite = scene.physics.add.image(x, y, `${def.spriteKey}_idle_3`);
     this.sprite.setOrigin(0.5, 0.85);
     this.sprite.setScale(def.scale);
-    this.sprite.setTint(def.tint);
+    if (def.tint !== 0xffffff) this.sprite.setTint(def.tint);
     this.sprite.setCollideWorldBounds(true);
 
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
@@ -180,7 +180,7 @@ export class Enemy {
       (Math.abs(body.velocity.x) > 5 || Math.abs(body.velocity.y) > 5);
 
     if (!moving) {
-      this.sprite.setTexture(`char_idle_${this.currentDir}`);
+      this.sprite.setTexture(`${this.def.spriteKey}_idle_${this.currentDir}`);
       this.runFrame = 0;
       return;
     }
@@ -190,8 +190,8 @@ export class Enemy {
       this.frameTimer = 0;
       this.runFrame = (this.runFrame + 1) % 10;
     }
-    this.sprite.setTexture(`char_run_${this.currentDir}_${this.runFrame}`);
-    this.sprite.setTint(this.def.tint);
+    this.sprite.setTexture(`${this.def.spriteKey}_run_${this.currentDir}_${this.runFrame}`);
+    if (this.def.tint !== 0xffffff) this.sprite.setTint(this.def.tint);
   }
 
   private velocityToDir(vx: number, vy: number): number {

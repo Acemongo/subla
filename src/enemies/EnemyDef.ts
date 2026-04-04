@@ -38,10 +38,10 @@ export const ENEMY_DEFS: Record<string, EnemyDef> = {
     attackRange:     1.5,   // tiles — adjacent
     attackType:      'melee',
     attackDamage:    10,
-    attackCooldown:  1000,  // 1s heartbeat
+    attackCooldown:  5000,  // 5s (5 heartbeats)
     canMove:         true,
-    spriteKey:       'char',
-    tint:            0x884400,  // brownish-red
+    spriteKey:       'morlock',
+    tint:            0xffffff,  // no tint — use actual sprite colors
     scale:           0.45,
   },
 

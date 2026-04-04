@@ -36,12 +36,21 @@ export class BootScene extends Phaser.Scene {
     this.load.image('dirtTiles_E',    iso + 'dirtTiles_E.png');
     this.load.image('stoneWallAged_E', iso + 'stoneWallAged_E.png');
 
-    // Character sprites — 8 directions (0–7), idle + 10 run frames each
+    // Player character sprites — 8 directions
     const charBase = 'assets/tilesets/kenney_miniature_dungeon/Characters/Male/';
     for (let dir = 0; dir < 8; dir++) {
       this.load.image(`char_idle_${dir}`, charBase + `Male_${dir}_Idle0.png`);
       for (let f = 0; f < 10; f++) {
         this.load.image(`char_run_${dir}_${f}`, charBase + `Male_${dir}_Run${f}.png`);
+      }
+    }
+
+    // Morlock enemy sprites — 8 directions
+    const morlockBase = 'assets/tilesets/kenney_miniature_dungeon/Characters/';
+    for (let dir = 0; dir < 8; dir++) {
+      this.load.image(`morlock_idle_${dir}`, morlockBase + `Morlock_${dir}_Idle0.png`);
+      for (let f = 0; f < 10; f++) {
+        this.load.image(`morlock_run_${dir}_${f}`, morlockBase + `Morlock_${dir}_Run${f}.png`);
       }
     }
   }
