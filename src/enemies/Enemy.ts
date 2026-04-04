@@ -90,17 +90,21 @@ export class Enemy {
         break;
       case 'pursue':
         if (tileDist > this.def.detectionRadius * 1.5) {
-          this.state = 'idle'; // lost player
+          this.state = 'idle';
           this.waypoints = [];
+          body.setVelocity(0, 0);
         } else if (tileDist <= this.def.attackRange) {
           this.state = 'attack';
           this.waypoints = [];
+          body.setVelocity(0, 0);
         } else {
           this.pursuePlayer(delta, playerX, playerY, walkable);
         }
         break;
       case 'attack':
+        // Fully stationary during attack — halt any residual velocity
         body.setVelocity(0, 0);
+        this.waypoints = [];
         if (tileDist > this.def.attackRange * 1.5) {
           this.state = this.def.canMove ? 'pursue' : 'idle';
         } else {
@@ -181,11 +185,13 @@ export class Enemy {
   private updateAnimation(delta: number): void {
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
     const speed = Math.sqrt(body.velocity.x**2 + body.velocity.y**2);
+    // Only animate when pursuing and actually moving
     const moving = this.state === 'pursue' && speed > 20;
 
     if (!moving) {
       this.sprite.setTexture(`${this.def.spriteKey}_idle_${this.currentDir}`);
       this.runFrame = 0;
+      this.frameTimer = 0;
       return;
     }
 
