@@ -6,6 +6,7 @@ import { Inventory } from '../inventory/Inventory';
 import { Inventory as InventoryClass } from '../inventory/Inventory';
 import { InventoryUI } from '../inventory/InventoryUI';
 import { findPath } from '../world/Pathfinder';
+import { EnemyManager } from '../enemies/EnemyManager';
 
 export class GameScene extends Phaser.Scene {
   private player!: Player;
@@ -30,6 +31,21 @@ export class GameScene extends Phaser.Scene {
   public inventory!: InventoryClass;
   private inventoryUI!: InventoryUI;
   private lastClickTime = 0;
+
+  // Enemies
+  private enemyManager!: EnemyManager;
+
+  // Combat keys
+  private spaceKey!: Phaser.Input.Keyboard.Key;
+  private qKey!: Phaser.Input.Keyboard.Key;
+  private enterKey!: Phaser.Input.Keyboard.Key;
+
+  // Combat cooldown (ms)
+  private meleeCooldown  = 0;
+  private rangedCooldown = 0;
+  private readonly MELEE_COOLDOWN  = 800;
+  private readonly RANGED_COOLDOWN = 1200;
+  private readonly MELEE_RANGE_PX  = 200; // ~1 tile
 
   constructor() {
     super({ key: 'GameScene' });
@@ -66,7 +82,19 @@ export class GameScene extends Phaser.Scene {
       left:  this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A),
       right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
-    this.iKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
+    this.iKey     = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.I);
+    this.spaceKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.qKey     = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+    this.enterKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+
+    // Spawn enemies
+    this.enemyManager = new EnemyManager(this, this.worldMap);
+    this.enemyManager.spawnAll([
+      { enemyId: 'morlock', col: 4,  row: 4  },
+      { enemyId: 'morlock', col: 15, row: 4  },
+      { enemyId: 'morlock', col: 4,  row: 11 },
+    ]);
+    this.enemyManager.addWallColliders(this.worldMap.wallGroup);
 
     // Double-click/tap to navigate (single click reserved for inspect/interact)
     this.input.on('pointermove', () => { /* keep pointer active */ });
@@ -173,9 +201,124 @@ export class GameScene extends Phaser.Scene {
 
     this.player.move(up, down, left, right, delta);
     this.player.updateDepth(this.worldMap.offsetX, this.worldMap.offsetY, this.worldMap.renderer?.tileH);
+
+    // Update enemies
+    this.enemyManager.update(delta, this.player.sprite.x, this.player.sprite.y, (dmg) => {
+      this.currentHp = Math.max(0, this.currentHp - dmg);
+      (this.scene.get('UIScene') as any)?.refreshHud?.();
+      if (this.currentHp <= 0) this.onPlayerDeath();
+    });
+
+    // Combat cooldowns
+    if (this.meleeCooldown  > 0) this.meleeCooldown  -= delta;
+    if (this.rangedCooldown > 0) this.rangedCooldown -= delta;
+
+    // Melee attack — Space
+    if (Phaser.Input.Keyboard.JustDown(this.spaceKey) && this.meleeCooldown <= 0) {
+      this.doMeleeAttack();
+    }
+
+    // Ranged attack — Q or Enter
+    if ((Phaser.Input.Keyboard.JustDown(this.qKey) ||
+         Phaser.Input.Keyboard.JustDown(this.enterKey)) && this.rangedCooldown <= 0) {
+      this.doRangedAttack();
+    }
   }
 
 
+
+  private doMeleeAttack(): void {
+    const weapon = this.inventory.equipped.weapon;
+    const dmg = weapon ? (weapon.stats.attack ?? 2) : 2; // fists = 2 dmg
+    const enemy = this.enemyManager.getEnemyInRange(
+      this.player.sprite.x, this.player.sprite.y, this.MELEE_RANGE_PX
+    );
+    if (enemy) {
+      enemy.takeDamage(dmg);
+      if (weapon) this.inventory.degradeWeapon();
+      this.showFloatingText(`-${dmg}`, enemy.sprite.x, enemy.sprite.y - 80, '#ff4444');
+    } else {
+      this.showFloatingText('Miss!', this.player.sprite.x, this.player.sprite.y - 80, '#888888');
+    }
+    this.meleeCooldown = this.MELEE_COOLDOWN;
+  }
+
+  private doRangedAttack(): void {
+    const weapon = this.inventory.equipped.weapon;
+    if (!weapon?.ammoType) {
+      this.showFloatingText('No ranged weapon!', this.player.sprite.x, this.player.sprite.y - 80, '#888888');
+      return;
+    }
+    if (!this.inventory.hasAmmo()) {
+      this.showFloatingText('Out of ammo!', this.player.sprite.x, this.player.sprite.y - 80, '#ff8800');
+      return;
+    }
+
+    const dmg = weapon.stats.attack ?? 5;
+    // Find closest enemy within ranged range (~5 tiles)
+    const rangeGpx = (this.worldMap.renderer?.tileW ?? 256) * 2.5;
+    const enemy = this.enemyManager.getEnemyInRange(
+      this.player.sprite.x, this.player.sprite.y, rangeGpx
+    );
+
+    if (enemy) {
+      this.inventory.consumeAmmo();
+      this.inventory.degradeWeapon();
+      this.fireProjectile(
+        this.player.sprite.x, this.player.sprite.y,
+        enemy.sprite.x, enemy.sprite.y,
+        () => {
+          enemy.takeDamage(dmg);
+          this.showFloatingText(`-${dmg}`, enemy.sprite.x, enemy.sprite.y - 80, '#ff8800');
+        }
+      );
+    } else {
+      this.showFloatingText('No target!', this.player.sprite.x, this.player.sprite.y - 80, '#888888');
+    }
+    this.rangedCooldown = this.RANGED_COOLDOWN;
+  }
+
+  private fireProjectile(
+    fromX: number, fromY: number,
+    toX: number, toY: number,
+    onHit: () => void,
+  ): void {
+    const bullet = this.add.circle(fromX, fromY, 6, 0xffcc00).setDepth(5000);
+    this.tweens.add({
+      targets: bullet,
+      x: toX, y: toY,
+      duration: 200,
+      ease: 'Linear',
+      onComplete: () => {
+        bullet.destroy();
+        onHit();
+      },
+    });
+  }
+
+  private showFloatingText(text: string, x: number, y: number, color: string): void {
+    const t = this.add.text(x, y, text, {
+      fontSize: '16px', color, fontStyle: 'bold',
+      stroke: '#000000', strokeThickness: 3,
+    }).setOrigin(0.5).setDepth(6000);
+    this.tweens.add({
+      targets: t,
+      y: y - 50, alpha: 0,
+      duration: 800,
+      onComplete: () => t.destroy(),
+    });
+  }
+
+  private onPlayerDeath(): void {
+    // For now just show a message — death/respawn system TBD
+    this.add.text(
+      this.cameras.main.width / 2,
+      this.cameras.main.height / 2,
+      '💀 You died.\nRefresh to respawn.',
+      { fontSize: '24px', color: '#ff4444', align: 'center',
+        backgroundColor: '#000000aa', padding: { x: 20, y: 12 } }
+    ).setOrigin(0.5).setScrollFactor(0).setDepth(9999);
+  }
 
   private handleClickNavigation(pointer: Phaser.Input.Pointer): void {
     const worldX = pointer.worldX;
