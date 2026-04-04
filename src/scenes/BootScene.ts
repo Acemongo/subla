@@ -45,13 +45,24 @@ export class BootScene extends Phaser.Scene {
       }
     }
 
-    // Morlock enemy sprites — 8 directions
+    // Morlock enemy sprites
     const morlockBase = 'assets/tilesets/kenney_miniature_dungeon/Characters/';
+    // Idle (same for all directions — single front-facing sprite)
     for (let dir = 0; dir < 8; dir++) {
-      this.load.image(`morlock_idle_${dir}`, morlockBase + `Morlock_${dir}_Idle0.png`);
-      for (let f = 0; f < 10; f++) {
-        this.load.image(`morlock_run_${dir}_${f}`, morlockBase + `Morlock_${dir}_Run${f}.png`);
+      this.load.image(`morlock_idle_${dir}`, morlockBase + `Morlock_Idle0.png`);
+    }
+    // Walk animation — 8 frames, shared across all directions
+    for (let f = 0; f < 8; f++) {
+      this.load.image(`morlock_walk_${f}`, morlockBase + `morlock_walk_${f}.png`);
+      // Map to run key format expected by Enemy.ts
+      for (let dir = 0; dir < 8; dir++) {
+        this.load.image(`morlock_run_${dir}_${f}`, morlockBase + `morlock_walk_${f}.png`);
       }
+    }
+    // Fill remaining frames (8 and 9) with last walk frame
+    for (let dir = 0; dir < 8; dir++) {
+      this.load.image(`morlock_run_${dir}_8`, morlockBase + `morlock_walk_7.png`);
+      this.load.image(`morlock_run_${dir}_9`, morlockBase + `morlock_walk_7.png`);
     }
   }
 
